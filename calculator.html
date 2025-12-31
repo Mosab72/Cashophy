@@ -3,136 +3,541 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>حاسبة القروض الشاملة - Cashophy</title>
+    <meta name="description" content="حاسبة قروض شاملة - احسب القسط الشهري والفائدة ونسبة الاستقطاع بدقة">
+    <title>حاسبة القروض الشاملة - احسب قرضك بالتفصيل</title>
+    
     <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+    <!-- Navbar -->
     <nav class="navbar">
-        <div class="navbar-container">
-            <div class="navbar-brand">
-                <h1>💰 Cashophy</h1>
-            </div>
+        <div class="container">
+            <a href="index.html" class="navbar-brand">
+                <i class="fas fa-calculator navbar-brand-icon"></i>
+                <span class="navbar-brand-text">حاسبة القروض</span>
+            </a>
+            
+            <button class="navbar-toggle" aria-label="القائمة">
+                <i class="fas fa-bars"></i>
+            </button>
+            
             <ul class="navbar-menu">
                 <li><a href="index.html">الرئيسية</a></li>
-                <li><a href="calculator.html">حاسبة القروض</a></li>
+                <li><a href="calculator.html" class="active">حاسبة القروض</a></li>
                 <li><a href="salary-calculator.html">حاسبة الراتب</a></li>
-                <li><a href="analysis.html">التحليل المالي</a></li>
+                <li><a href="financial-analysis.html">التحليل المالي</a></li>
+                <li><a href="education.html">مكتبة توعوية</a></li>
                 <li><a href="about.html">من نحن</a></li>
             </ul>
         </div>
     </nav>
 
-    <div class="container">
-        <h1>📊 حاسبة القروض الشاملة</h1>
-        <p>احسب قرضك بدقة واعرف كل التفاصيل - القسط الشهري، الفائدة، النسب</p>
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1><i class="fas fa-calculator"></i> حاسبة القروض الشاملة</h1>
+            <p>احسب قرضك بالتفصيل: القسط الشهري، إجمالي الفائدة، والنسب المئوية</p>
+        </div>
+    </section>
 
-        <div class="card">
-            <h2 class="card-title">أدخل بيانات القرض</h2>
-            
-            <div class="grid grid-2">
-                <div class="form-group">
-                    <label class="form-label">مبلغ القرض (ريال)</label>
-                    <input type="number" id="loan-amount" class="form-input" placeholder="مثال: 100000" value="100000">
+    <!-- Main Content -->
+    <section class="section">
+        <div class="container">
+            <div class="grid grid-2" style="gap: 2rem; align-items: start;">
+                <!-- Input Card -->
+                <div class="card calculator-card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i class="fas fa-edit" style="color: var(--accent-gold);"></i>
+                            بيانات القرض
+                        </h2>
+                        <p>ادخل تفاصيل القرض اللي تبي تحسبه</p>
+                    </div>
+                    
+                    <div class="card-body">
+                        <form id="loanForm">
+                            <!-- مبلغ القرض -->
+                            <div class="form-group">
+                                <label class="form-label" for="loanAmount">
+                                    💰 مبلغ القرض (ريال سعودي)
+                                </label>
+                                <input type="number" id="loanAmount" class="form-input" 
+                                       placeholder="مثال: 200000" value="200000" min="1000" step="1000" required>
+                                <span class="form-help">المبلغ الكلي اللي تبي تقترضه</span>
+                            </div>
+
+                            <!-- مدة القرض -->
+                            <div class="form-group">
+                                <label class="form-label" for="loanYears">
+                                    📅 مدة القرض (سنوات)
+                                </label>
+                                <input type="number" id="loanYears" class="form-input" 
+                                       placeholder="مثال: 10" value="10" min="1" max="30" step="0.5" required>
+                                <span class="form-help">كم سنة راح تاخذ عشان تسدد القرض</span>
+                            </div>
+
+                            <!-- نسبة الفائدة -->
+                            <div class="form-group">
+                                <label class="form-label" for="interestRate">
+                                    📊 نسبة الفائدة السنوية (%)
+                                </label>
+                                <input type="number" id="interestRate" class="form-input" 
+                                       placeholder="مثال: 5.5" value="5.5" min="0" max="25" step="0.1" required>
+                                <span class="form-help">نسبة الفائدة اللي راح يحسبها البنك</span>
+                            </div>
+
+                            <!-- نوع الفائدة -->
+                            <div class="form-group">
+                                <label class="form-label" for="interestType">
+                                    🔄 نوع الفائدة
+                                </label>
+                                <select id="interestType" class="form-select">
+                                    <option value="fixed">فائدة ثابتة (القسط ثابت كل شهر)</option>
+                                    <option value="reducing">فائدة متناقصة (القسط ينزل مع الوقت)</option>
+                                </select>
+                                <span class="form-help">الفائدة الثابتة: نفس القسط كل شهر | المتناقصة: القسط يقل تدريجياً</span>
+                            </div>
+
+                            <!-- راتبك (اختياري) -->
+                            <div class="form-group">
+                                <label class="form-label" for="monthlySalary">
+                                    💵 راتبك الشهري (اختياري)
+                                </label>
+                                <input type="number" id="monthlySalary" class="form-input" 
+                                       placeholder="مثال: 15000" value="15000" min="0">
+                                <span class="form-help">عشان نحسب لك نسبة الاستقطاع من راتبك</span>
+                            </div>
+
+                            <button type="submit" class="btn btn-gold btn-lg btn-block">
+                                <i class="fas fa-calculator"></i> احسب القرض الحين
+                            </button>
+                        </form>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">مدة القرض (سنوات)</label>
-                    <input type="number" id="loan-years" class="form-input" placeholder="مثال: 5" value="5">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">نسبة الفائدة السنوية (%)</label>
-                    <input type="number" id="loan-rate" class="form-input" placeholder="مثال: 4.5" value="4.5" step="0.1">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">نوع الفائدة</label>
-                    <select id="interest-type" class="form-select">
-                        <option value="fixed">فائدة ثابتة</option>
-                        <option value="reducing">فائدة متناقصة</option>
-                    </select>
+
+                <!-- Results Card -->
+                <div id="resultsContainer" class="hidden">
+                    <div class="card results-card">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <i class="fas fa-chart-bar" style="color: var(--accent-gold);"></i>
+                                نتائج الحساب
+                            </h2>
+                            <p id="loanSummary"></p>
+                        </div>
+                        
+                        <div class="card-body">
+                            <div id="resultsContent"></div>
+                        </div>
+                    </div>
+
+                    <!-- نسبة الاستقطاع (إذا تم إدخال الراتب) -->
+                    <div id="salaryImpactCard" class="hidden">
+                        <div class="card" style="margin-top: 1.5rem;">
+                            <div class="card-header">
+                                <h3 class="card-title">
+                                    <i class="fas fa-wallet" style="color: var(--accent-gold);"></i>
+                                    تأثير القرض على راتبك
+                                </h3>
+                            </div>
+                            <div class="card-body">
+                                <div id="salaryImpactContent"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <button onclick="calculateLoan()" class="btn btn-primary btn-block">احسب الآن 🚀</button>
-        </div>
+            <!-- Info Boxes -->
+            <div class="info-boxes" style="margin-top: 3rem;">
+                <div class="grid grid-2">
+                    <div class="info-box">
+                        <div class="info-box-icon">💡</div>
+                        <h3>الفائدة الثابتة vs المتناقصة</h3>
+                        <p><strong>الفائدة الثابتة:</strong> القسط الشهري يكون ثابت من أول شهر لآخر شهر. أسهل في التخطيط المالي.</p>
+                        <p><strong>الفائدة المتناقصة:</strong> القسط يبدأ عالي ويقل تدريجياً. إجمالي الفائدة أقل من الثابتة.</p>
+                    </div>
 
-        <div id="results" style="display: none; margin-top: 2rem;">
-            <h2>📈 نتائج الحساب</h2>
-            
-            <div class="grid grid-2">
-                <div class="result-item">
-                    <div class="result-label">القسط الشهري</div>
-                    <div class="result-value" id="monthly-payment">0 ريال</div>
-                    <span class="result-percentage" id="payment-ratio">0%</span>
-                    <div class="result-description">هذا المبلغ راح يطلع من حسابك كل شهر</div>
-                </div>
-
-                <div class="result-item">
-                    <div class="result-label">إجمالي الفائدة</div>
-                    <div class="result-value" id="total-interest">0 ريال</div>
-                    <span class="result-percentage" id="interest-ratio">0%</span>
-                    <div class="result-description">المبلغ الزائد اللي راح تدفعه للبنك</div>
-                </div>
-
-                <div class="result-item">
-                    <div class="result-label">إجمالي المدفوع</div>
-                    <div class="result-value" id="total-payment">0 ريال</div>
-                    <div class="result-description">المبلغ الكلي اللي راح تدفعه طوال مدة القرض</div>
-                </div>
-
-                <div class="result-item">
-                    <div class="result-label">نسبة الفائدة من القرض</div>
-                    <div class="result-value" id="interest-percentage">0%</div>
-                    <div class="result-description">النسبة المئوية للفائدة من مبلغ القرض الأصلي</div>
+                    <div class="info-box">
+                        <div class="info-box-icon">⚠️</div>
+                        <h3>نصائح مهمة قبل الاقتراض</h3>
+                        <ul>
+                            <li>القسط الشهري ما يتجاوز 33% من راتبك</li>
+                            <li>احسب كل التكاليف الإضافية (رسوم، تأمين، إلخ)</li>
+                            <li>خلّي عندك احتياطي مالي للطوارئ</li>
+                            <li>قارن بين عروض البنوك المختلفة</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
 
-            <div id="alert-container"></div>
+            <!-- Quick Links -->
+            <div class="quick-links-section" style="margin-top: 3rem;">
+                <h3 class="text-center" style="margin-bottom: 2rem;">حاسبات إضافية قد تهمك</h3>
+                <div class="grid grid-3">
+                    <a href="salary-calculator.html" class="quick-link-card card">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <h4>حاسبة الراتب</h4>
+                        <p>احسب نسبة الاستقطاع من راتبك</p>
+                    </a>
+                    
+                    <a href="payment-schedule.html" class="quick-link-card card">
+                        <i class="fas fa-table"></i>
+                        <h4>جدول السداد</h4>
+                        <p>شوف جدول الأقساط الشهري</p>
+                    </a>
+                    
+                    <a href="loan-comparison.html" class="quick-link-card card">
+                        <i class="fas fa-balance-scale"></i>
+                        <h4>مقارنة القروض</h4>
+                        <p>قارن بين عروض مختلفة</p>
+                    </a>
+                </div>
+            </div>
         </div>
-    </div>
+    </section>
 
+    <!-- Footer -->
     <footer class="footer">
-        <div class="footer-container">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>عن الموقع</h4>
+                    <p>موقع احترافي مجاني يساعدك تفهم القروض والتمويل الشخصي بطريقة سهلة وواضحة.</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>روابط سريعة</h4>
+                    <ul class="footer-links">
+                        <li><a href="calculator.html">حاسبة القروض</a></li>
+                        <li><a href="salary-calculator.html">حاسبة الراتب</a></li>
+                        <li><a href="financial-analysis.html">التحليل المالي</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>أدوات إضافية</h4>
+                    <ul class="footer-links">
+                        <li><a href="borrowing-capacity.html">القدرة على الاقتراض</a></li>
+                        <li><a href="loan-comparison.html">مقارنة القروض</a></li>
+                        <li><a href="education.html">مكتبة توعوية</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>تواصل معنا</h4>
+                    <ul class="footer-links">
+                        <li><a href="about.html">من نحن</a></li>
+                        <li><a href="about.html#contact">اتصل بنا</a></li>
+                    </ul>
+                </div>
+            </div>
+            
             <div class="footer-bottom">
-                <p>© 2024 Cashophy - جميع الحقوق محفوظة</p>
+                <p>&copy; 2024 حاسبة القروض الذكية. جميع الحقوق محفوظة.</p>
             </div>
         </div>
     </footer>
 
+    <!-- JavaScript Files -->
+    <script src="js/utils.js"></script>
     <script src="js/calculator.js"></script>
-    <script src="js/main.js"></script>
+    
     <script>
-        function calculateLoan() {
-            const amount = parseFloat(document.getElementById('loan-amount').value);
-            const years = parseFloat(document.getElementById('loan-years').value);
-            const rate = parseFloat(document.getElementById('loan-rate').value);
-            const type = document.getElementById('interest-type').value;
+        // Calculator Page Script
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('loanForm');
+            
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                calculateLoanDetails();
+            });
 
-            if (!amount || !years || !rate) {
-                alert('الرجاء إدخال جميع البيانات');
+            // تحميل القيم المحفوظة
+            loadSavedValues();
+        });
+
+        function calculateLoanDetails() {
+            // الحصول على القيم
+            const loanAmount = parseFloat(document.getElementById('loanAmount').value);
+            const loanYears = parseFloat(document.getElementById('loanYears').value);
+            const interestRate = parseFloat(document.getElementById('interestRate').value);
+            const interestType = document.getElementById('interestType').value;
+            const salary = parseFloat(document.getElementById('monthlySalary').value) || 0;
+
+            // التحقق من الإدخالات
+            if (!loanAmount || !loanYears || interestRate === null || interestRate === undefined) {
+                alert('الرجاء إدخال جميع البيانات المطلوبة');
                 return;
             }
 
-            const result = LoanCalculator.calculateLoanDetails(amount, rate, years, type);
+            // حساب القرض
+            const loanDetails = calculateLoan(loanAmount, interestRate, loanYears, interestType);
 
-            document.getElementById('monthly-payment').textContent = formatCurrency(result.monthlyPayment);
-            document.getElementById('total-interest').textContent = formatCurrency(result.totalInterest);
-            document.getElementById('total-payment').textContent = formatCurrency(result.totalPayment);
-            document.getElementById('interest-percentage').textContent = formatPercentage(result.interestRate);
-            document.getElementById('payment-ratio').textContent = formatPercentage(result.paymentToLoanRatio);
-            document.getElementById('interest-ratio').textContent = formatPercentage(result.interestRate);
+            // عرض النتائج
+            displayResults(loanDetails, loanAmount, loanYears, interestRate, interestType);
 
-            // عرض تحذير حسب نسبة الفائدة
-            const alertContainer = document.getElementById('alert-container');
-            if (result.interestRate > 30) {
-                alertContainer.innerHTML = '<div class="alert alert-danger">⚠️ تحذير! نسبة الفائدة عالية جداً - راح تدفع أكثر من 30% زيادة على المبلغ</div>';
-            } else if (result.interestRate > 20) {
-                alertContainer.innerHTML = '<div class="alert alert-warning">⚠️ انتبه! نسبة الفائدة عالية نوعاً ما</div>';
+            // إذا تم إدخال الراتب
+            if (salary > 0) {
+                displaySalaryImpact(loanDetails.monthlyPayment, salary);
             } else {
-                alertContainer.innerHTML = '<div class="alert alert-success">✓ نسبة الفائدة معقولة</div>';
+                document.getElementById('salaryImpactCard').classList.add('hidden');
             }
 
-            document.getElementById('results').style.display = 'block';
-            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+            // حفظ القيم
+            saveToLocalStorage('loanCalculator', {
+                loanAmount, loanYears, interestRate, interestType, salary
+            });
+
+            // إظهار النتائج
+            document.getElementById('resultsContainer').classList.remove('hidden');
+            
+            // Scroll to results
+            document.getElementById('resultsContainer').scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'nearest' 
+            });
+        }
+
+        function displayResults(details, amount, years, rate, type) {
+            const months = Math.round(years * 12);
+            
+            // ملخص القرض
+            document.getElementById('loanSummary').innerHTML = `
+                قرض بمبلغ ${formatCurrency(amount)} لمدة ${years} سنة (${months} شهر) بفائدة ${rate}% ${type === 'fixed' ? 'ثابتة' : 'متناقصة'}
+            `;
+
+            // النتائج التفصيلية
+            let resultsHTML = '';
+
+            if (type === 'reducing') {
+                resultsHTML = `
+                    ${createResultHTML(
+                        '💳 أول قسط شهري (الأعلى)',
+                        formatCurrency(details.firstPayment),
+                        null,
+                        'أعلى قسط راح تدفعه في الشهر الأول'
+                    )}
+                    
+                    ${createResultHTML(
+                        '💳 آخر قسط شهري (الأقل)',
+                        formatCurrency(details.lastPayment),
+                        null,
+                        'أقل قسط راح تدفعه في الشهر الأخير'
+                    )}
+                    
+                    ${createResultHTML(
+                        '💳 متوسط القسط الشهري',
+                        formatCurrency(details.monthlyPayment),
+                        formatPercentage(details.monthlyPaymentPercentage, 1),
+                        'متوسط المبلغ الشهري طوال مدة القرض'
+                    )}
+                `;
+            } else {
+                resultsHTML = `
+                    ${createResultHTML(
+                        '💳 القسط الشهري الثابت',
+                        formatCurrency(details.monthlyPayment),
+                        formatPercentage(details.monthlyPaymentPercentage, 1),
+                        'هذا المبلغ راح تدفعه كل شهر بدون تغيير'
+                    )}
+                `;
+            }
+
+            resultsHTML += `
+                ${createResultHTML(
+                    '💰 إجمالي الفائدة',
+                    formatCurrency(details.totalInterest),
+                    formatPercentage(details.interestPercentage, 1),
+                    'المبلغ الإضافي اللي راح تدفعه فوق أصل القرض'
+                )}
+                
+                ${createResultHTML(
+                    '💵 إجمالي المبلغ المدفوع',
+                    formatCurrency(details.totalAmount),
+                    null,
+                    'إجمالي المبلغ الكلي (أصل القرض + الفائدة)'
+                )}
+            `;
+
+            // تحذير إذا كانت الفائدة عالية
+            if (details.interestPercentage > 50) {
+                resultsHTML += `
+                    <div class="alert alert-danger" style="margin-top: 1.5rem;">
+                        <span class="alert-icon">🚨</span>
+                        <div>
+                            <strong>تحذير:</strong> نسبة الفائدة عالية جداً (${formatPercentage(details.interestPercentage, 1)})!<br>
+                            راح تدفع فائدة أكبر من أصل القرض نفسه. حاول تقلل المدة أو تدور على عرض أفضل.
+                        </div>
+                    </div>
+                `;
+            } else if (details.interestPercentage > 30) {
+                resultsHTML += `
+                    <div class="alert alert-warning" style="margin-top: 1.5rem;">
+                        <span class="alert-icon">⚠️</span>
+                        <div>
+                            نسبة الفائدة مرتفعة (${formatPercentage(details.interestPercentage, 1)}). 
+                            فكّر في تقليل مدة القرض لو تقدر عشان تقلل الفائدة.
+                        </div>
+                    </div>
+                `;
+            } else {
+                resultsHTML += `
+                    <div class="alert alert-success" style="margin-top: 1.5rem;">
+                        <span class="alert-icon">✅</span>
+                        <div>
+                            نسبة الفائدة معقولة (${formatPercentage(details.interestPercentage, 1)}). 
+                            القرض يعتبر مقبول من ناحية الفائدة.
+                        </div>
+                    </div>
+                `;
+            }
+
+            document.getElementById('resultsContent').innerHTML = resultsHTML;
+        }
+
+        function displaySalaryImpact(monthlyPayment, salary) {
+            const debtRatio = calculateDebtRatio(salary, monthlyPayment, 0);
+            const percentageClass = getPercentageClass(debtRatio.debtRatio);
+            const alertType = getAlertType(debtRatio.debtRatio);
+
+            const html = `
+                ${createResultHTML(
+                    '💵 راتبك الشهري',
+                    formatCurrency(salary),
+                    null,
+                    'الراتب قبل خصم القسط'
+                )}
+                
+                ${createResultHTML(
+                    '📊 نسبة الاستقطاع من الراتب',
+                    formatPercentage(debtRatio.debtRatio, 1),
+                    null,
+                    debtRatio.message,
+                    percentageClass
+                )}
+                
+                ${createResultHTML(
+                    '💰 صافي الراتب بعد القسط',
+                    formatCurrency(debtRatio.netSalary),
+                    formatPercentage(debtRatio.netSalaryPercentage, 1),
+                    'المبلغ اللي راح يتبقى لك كل شهر'
+                )}
+                
+                <div class="alert ${alertType}" style="margin-top: 1.5rem;">
+                    <span class="alert-icon">
+                        ${debtRatio.debtRatio <= 25 ? '✅' : debtRatio.debtRatio <= 33 ? '⚠️' : '🚨'}
+                    </span>
+                    <div>
+                        <strong>تقييم الوضع:</strong> ${debtRatio.message}
+                        ${debtRatio.debtRatio > 33 ? '<br><strong>نصيحة:</strong> القسط عالي على راتبك. حاول تقلل مبلغ القرض أو تزيد المدة.' : ''}
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('salaryImpactContent').innerHTML = html;
+            document.getElementById('salaryImpactCard').classList.remove('hidden');
+        }
+
+        function loadSavedValues() {
+            const saved = loadFromLocalStorage('loanCalculator');
+            if (saved) {
+                document.getElementById('loanAmount').value = saved.loanAmount || 200000;
+                document.getElementById('loanYears').value = saved.loanYears || 10;
+                document.getElementById('interestRate').value = saved.interestRate || 5.5;
+                document.getElementById('interestType').value = saved.interestType || 'fixed';
+                document.getElementById('monthlySalary').value = saved.salary || '';
+            }
         }
     </script>
+
+    <style>
+        .page-header {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-medium) 100%);
+            padding: 3rem 0;
+            color: white;
+            text-align: center;
+        }
+
+        .page-header h1 {
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: none;
+            -webkit-text-fill-color: white;
+        }
+
+        .page-header p {
+            font-size: 1.2rem;
+            color: #e2e8f0;
+        }
+
+        .info-boxes {
+            margin-top: 3rem;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: var(--border-radius-lg);
+            padding: 2rem;
+            border-right: 4px solid var(--accent-gold);
+        }
+
+        .info-box-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .info-box h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            color: var(--primary-dark);
+        }
+
+        .info-box p, .info-box ul {
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        .info-box ul {
+            list-style-position: inside;
+            padding-right: 1rem;
+        }
+
+        .info-box li {
+            margin-bottom: 0.5rem;
+        }
+
+        .quick-link-card {
+            text-align: center;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .quick-link-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-gold);
+        }
+
+        .quick-link-card i {
+            font-size: 3rem;
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .quick-link-card h4 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .quick-link-card p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+    </style>
 </body>
 </html>
