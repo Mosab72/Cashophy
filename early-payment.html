@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>السداد المبكر - Cashophy</title>
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-brand">
+                <h1>💰 Cashophy</h1>
+            </div>
+            <ul class="navbar-menu">
+                <li><a href="index.html">الرئيسية</a></li>
+                <li><a href="calculator.html">حاسبة القروض</a></li>
+                <li><a href="salary-calculator.html">حاسبة الراتب</a></li>
+                <li><a href="analysis.html">التحليل المالي</a></li>
+                <li><a href="about.html">من نحن</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>⏰ حاسبة السداد المبكر</h1>
+        <p>احسب كم راح توفر لو سددت جزء من القرض مبكر</p>
+
+        <div class="card">
+            <h2 class="card-title">بيانات القرض الحالي</h2>
+            
+            <div class="grid grid-2">
+                <div class="form-group">
+                    <label class="form-label">مبلغ القرض الأصلي (ريال)</label>
+                    <input type="number" id="early-amount" class="form-input" value="100000">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">نسبة الفائدة السنوية (%)</label>
+                    <input type="number" id="early-rate" class="form-input" value="4.5" step="0.1">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">مدة القرض (سنوات)</label>
+                    <input type="number" id="early-years" class="form-input" value="5">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">بعد كم شهر تبغى تسدد؟</label>
+                    <input type="number" id="early-when" class="form-input" value="12" min="1">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">المبلغ اللي تبغى تسدده مبكر</label>
+                    <input type="number" id="early-payment-amount" class="form-input" value="20000">
+                </div>
+            </div>
+
+            <button onclick="calculateEarly()" class="btn btn-primary btn-block">احسب التوفير 💰</button>
+        </div>
+
+        <div id="early-results" style="display: none; margin-top: 2rem;">
+            <h2>💡 نتائج السداد المبكر</h2>
+            
+            <div class="grid grid-2">
+                <div class="result-item">
+                    <div class="result-label">الفائدة الموفرة</div>
+                    <div class="result-value" id="saved-interest">0 ريال</div>
+                    <div class="result-description">المبلغ اللي راح توفره من الفائدة</div>
+                </div>
+
+                <div class="result-item">
+                    <div class="result-label">الوقت الموفر</div>
+                    <div class="result-value" id="saved-months">0 شهر</div>
+                    <div class="result-description">راح تخلص القرض أسرع بكم شهر</div>
+                </div>
+
+                <div class="result-item">
+                    <div class="result-label">الرصيد الجديد</div>
+                    <div class="result-value" id="new-balance">0 ريال</div>
+                    <div class="result-description">المتبقي من القرض بعد السداد المبكر</div>
+                </div>
+
+                <div class="result-item">
+                    <div class="result-label">المدة المتبقية الجديدة</div>
+                    <div class="result-value" id="new-duration">0 شهر</div>
+                    <div class="result-description">المدة الجديدة لإنهاء القرض</div>
+                </div>
+            </div>
+
+            <div id="early-alert"></div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-bottom">
+                <p>© 2024 Cashophy - جميع الحقوق محفوظة</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/calculator.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        function calculateEarly() {
+            const amount = parseFloat(document.getElementById('early-amount').value);
+            const rate = parseFloat(document.getElementById('early-rate').value);
+            const years = parseFloat(document.getElementById('early-years').value);
+            const whenMonths = parseInt(document.getElementById('early-when').value);
+            const earlyAmount = parseFloat(document.getElementById('early-payment-amount').value);
+
+            if (!amount || !rate || !years || !whenMonths || !earlyAmount) {
+                alert('الرجاء إدخال جميع البيانات');
+                return;
+            }
+
+            const result = LoanCalculator.calculateEarlyPayment(amount, rate, years, earlyAmount, whenMonths);
+
+            if (result.completed) {
+                document.getElementById('saved-interest').textContent = formatCurrency(result.savedInterest);
+                document.getElementById('saved-months').textContent = result.savedMonths + ' شهر';
+                document.getElementById('new-balance').textContent = '0 ريال (مسدد بالكامل)';
+                document.getElementById('new-duration').textContent = '0 شهر';
+                
+                document.getElementById('early-alert').innerHTML = 
+                    '<div class="alert alert-success">🎉 ممتاز! راح تسدد القرض بالكامل وتوفر ' + 
+                    formatCurrency(result.savedInterest) + ' من الفائدة!</div>';
+            } else {
+                document.getElementById('saved-interest').textContent = formatCurrency(result.savedInterest);
+                document.getElementById('saved-months').textContent = result.savedMonths + ' شهر';
+                document.getElementById('new-balance').textContent = formatCurrency(result.newBalance);
+                document.getElementById('new-duration').textContent = result.newMonths + ' شهر';
+                
+                document.getElementById('early-alert').innerHTML = 
+                    '<div class="alert alert-success">✓ السداد المبكر راح يوفر لك ' + 
+                    formatCurrency(result.savedInterest) + ' ويقلل المدة ' + result.savedMonths + ' شهر</div>';
+            }
+
+            document.getElementById('early-results').style.display = 'block';
+            document.getElementById('early-results').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

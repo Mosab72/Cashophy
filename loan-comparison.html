@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مقارنة القروض - Cashophy</title>
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-brand">
+                <h1>💰 Cashophy</h1>
+            </div>
+            <ul class="navbar-menu">
+                <li><a href="index.html">الرئيسية</a></li>
+                <li><a href="calculator.html">حاسبة القروض</a></li>
+                <li><a href="salary-calculator.html">حاسبة الراتب</a></li>
+                <li><a href="analysis.html">التحليل المالي</a></li>
+                <li><a href="about.html">من نحن</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>⚖️ مقارنة القروض</h1>
+        <p>قارن بين 3 عروض قروض واعرف الأفضل ليك</p>
+
+        <div class="grid grid-3">
+            <!-- القرض الأول -->
+            <div class="card">
+                <h3>🏦 القرض الأول</h3>
+                <div class="form-group">
+                    <label class="form-label">المبلغ</label>
+                    <input type="number" id="loan1-amount" class="form-input" value="100000">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">المدة (سنوات)</label>
+                    <input type="number" id="loan1-years" class="form-input" value="5">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">الفائدة (%)</label>
+                    <input type="number" id="loan1-rate" class="form-input" value="4.5" step="0.1">
+                </div>
+            </div>
+
+            <!-- القرض الثاني -->
+            <div class="card">
+                <h3>🏦 القرض الثاني</h3>
+                <div class="form-group">
+                    <label class="form-label">المبلغ</label>
+                    <input type="number" id="loan2-amount" class="form-input" value="100000">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">المدة (سنوات)</label>
+                    <input type="number" id="loan2-years" class="form-input" value="4">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">الفائدة (%)</label>
+                    <input type="number" id="loan2-rate" class="form-input" value="5.0" step="0.1">
+                </div>
+            </div>
+
+            <!-- القرض الثالث -->
+            <div class="card">
+                <h3>🏦 القرض الثالث</h3>
+                <div class="form-group">
+                    <label class="form-label">المبلغ</label>
+                    <input type="number" id="loan3-amount" class="form-input" value="100000">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">المدة (سنوات)</label>
+                    <input type="number" id="loan3-years" class="form-input" value="6">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">الفائدة (%)</label>
+                    <input type="number" id="loan3-rate" class="form-input" value="4.0" step="0.1">
+                </div>
+            </div>
+        </div>
+
+        <button onclick="compareLoans()" class="btn btn-primary btn-block">قارن الآن 🔍</button>
+
+        <div id="comparison-results" style="display: none; margin-top: 2rem;">
+            <h2>📊 نتائج المقارنة</h2>
+            
+            <div style="overflow-x: auto;">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>البند</th>
+                            <th>القرض الأول</th>
+                            <th>القرض الثاني</th>
+                            <th>القرض الثالث</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>القسط الشهري</strong></td>
+                            <td id="compare-payment1">-</td>
+                            <td id="compare-payment2">-</td>
+                            <td id="compare-payment3">-</td>
+                        </tr>
+                        <tr>
+                            <td><strong>إجمالي الفائدة</strong></td>
+                            <td id="compare-interest1">-</td>
+                            <td id="compare-interest2">-</td>
+                            <td id="compare-interest3">-</td>
+                        </tr>
+                        <tr>
+                            <td><strong>نسبة الفائدة</strong></td>
+                            <td id="compare-ratio1">-</td>
+                            <td id="compare-ratio2">-</td>
+                            <td id="compare-ratio3">-</td>
+                        </tr>
+                        <tr>
+                            <td><strong>إجمالي المدفوع</strong></td>
+                            <td id="compare-total1">-</td>
+                            <td id="compare-total2">-</td>
+                            <td id="compare-total3">-</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <h3>🏆 التوصية</h3>
+                <div id="recommendation" style="font-size: 1.1rem; line-height: 2;"></div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-bottom">
+                <p>© 2024 Cashophy - جميع الحقوق محفوظة</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/calculator.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        function compareLoans() {
+            const loans = [];
+            
+            for (let i = 1; i <= 3; i++) {
+                const amount = parseFloat(document.getElementById(`loan${i}-amount`).value);
+                const years = parseFloat(document.getElementById(`loan${i}-years`).value);
+                const rate = parseFloat(document.getElementById(`loan${i}-rate`).value);
+                
+                if (amount && years && rate) {
+                    const result = LoanCalculator.calculateLoanDetails(amount, rate, years, 'fixed');
+                    loans.push({ id: i, amount, years, rate, ...result });
+                }
+            }
+
+            if (loans.length < 2) {
+                alert('الرجاء إدخال بيانات قرضين على الأقل');
+                return;
+            }
+
+            // عرض النتائج
+            loans.forEach(loan => {
+                document.getElementById(`compare-payment${loan.id}`).textContent = formatCurrency(loan.monthlyPayment);
+                document.getElementById(`compare-interest${loan.id}`).textContent = formatCurrency(loan.totalInterest);
+                document.getElementById(`compare-ratio${loan.id}`).textContent = formatPercentage(loan.interestRate);
+                document.getElementById(`compare-total${loan.id}`).textContent = formatCurrency(loan.totalPayment);
+            });
+
+            // إيجاد الأفضل
+            const bestInterest = loans.reduce((best, current) => 
+                current.totalInterest < best.totalInterest ? current : best
+            );
+
+            const bestPayment = loans.reduce((best, current) => 
+                current.monthlyPayment < best.monthlyPayment ? current : best
+            );
+
+            let recommendation = '<ul style="line-height: 2;">';
+            recommendation += `<li>✓ <strong>أقل فائدة:</strong> القرض ${bestInterest.id} بفائدة ${formatCurrency(bestInterest.totalInterest)}</li>`;
+            recommendation += `<li>✓ <strong>أقل قسط شهري:</strong> القرض ${bestPayment.id} بقسط ${formatCurrency(bestPayment.monthlyPayment)}</li>`;
+            
+            if (bestInterest.id === bestPayment.id) {
+                recommendation += `<li>🏆 <strong>الأفضل بشكل عام:</strong> القرض ${bestInterest.id}</li>`;
+            } else {
+                recommendation += `<li>💡 إذا تبغى توفير على المدى البعيد: اختر القرض ${bestInterest.id}</li>`;
+                recommendation += `<li>💡 إذا تبغى قسط أقل شهرياً: اختر القرض ${bestPayment.id}</li>`;
+            }
+            
+            recommendation += '</ul>';
+
+            document.getElementById('recommendation').innerHTML = recommendation;
+            document.getElementById('comparison-results').style.display = 'block';
+            document.getElementById('comparison-results').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

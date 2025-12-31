@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cashophy - حاسبة القروض الذكية</title>
+    <meta name="description" content="احسب قرضك بدقة واعرف تأثيره الحقيقي على راتبك ونمط حياتك">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-brand">
+                <h1>💰 Cashophy</h1>
+            </div>
+            <ul class="navbar-menu">
+                <li><a href="index.html">الرئيسية</a></li>
+                <li><a href="calculator.html">حاسبة القروض</a></li>
+                <li><a href="salary-calculator.html">حاسبة الراتب</a></li>
+                <li><a href="analysis.html">التحليل المالي</a></li>
+                <li><a href="about.html">من نحن</a></li>
+            </ul>
+            <button class="navbar-toggle">☰</button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>افهم قرضك قبل ما تاخذه</h1>
+            <p>احسب التأثير الحقيقي للقرض على راتبك ونمط حياتك بأرقام واضحة ونسب دقيقة</p>
+        </div>
+    </section>
+
+    <!-- Quick Calculator -->
+    <div class="container">
+        <div class="card">
+            <h2 class="card-title">⚡ حاسبة سريعة</h2>
+            <div class="grid grid-3">
+                <div class="form-group">
+                    <label class="form-label">مبلغ القرض (ريال)</label>
+                    <input type="number" id="quick-amount" class="form-input" placeholder="مثال: 100000" value="100000">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">مدة القرض (سنوات)</label>
+                    <input type="number" id="quick-years" class="form-input" placeholder="مثال: 5" value="5">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">نسبة الفائدة السنوية (%)</label>
+                    <input type="number" id="quick-rate" class="form-input" placeholder="مثال: 4.5" value="4.5" step="0.1">
+                </div>
+            </div>
+            <button id="quick-calc-btn" class="btn btn-primary btn-block">احسب الآن 🚀</button>
+            
+            <div id="quick-result" style="display: none; margin-top: 2rem;"></div>
+        </div>
+
+        <!-- Features -->
+        <div class="grid grid-3" style="margin-top: 3rem;">
+            <div class="card">
+                <h3>📊 حسابات دقيقة</h3>
+                <p>معادلات مالية معتمدة لحساب الفائدة الثابتة والمتناقصة بدقة 100%</p>
+                <a href="calculator.html" class="btn btn-primary">جرّب الآن</a>
+            </div>
+            <div class="card">
+                <h3>💸 تحليل الراتب</h3>
+                <p>اعرف نسبة الاستقطاع من راتبك وهل القرض آمن ولا خطر على وضعك المالي</p>
+                <a href="salary-calculator.html" class="btn btn-primary">احسب الآن</a>
+            </div>
+            <div class="card">
+                <h3>🎯 تقييم شامل</h3>
+                <p>مؤشر الخطر المالي ونصائح مخصصة لتحسين وضعك المالي</p>
+                <a href="analysis.html" class="btn btn-primary">ابدأ التحليل</a>
+            </div>
+        </div>
+
+        <!-- More Services -->
+        <h2 style="margin-top: 3rem; text-align: center;">خدمات إضافية</h2>
+        <div class="grid grid-2" style="margin-top: 2rem;">
+            <div class="card">
+                <h3>📋 جدول السداد</h3>
+                <p>شوف جدول تفصيلي لكل قسط شهري - المبلغ الأصلي والفائدة</p>
+                <a href="payment-schedule.html" class="btn btn-primary">شاهد الجدول</a>
+            </div>
+            <div class="card">
+                <h3>⚖️ مقارنة القروض</h3>
+                <p>قارن بين 3 عروض قروض واعرف الأفضل ليك</p>
+                <a href="loan-comparison.html" class="btn btn-primary">قارن الآن</a>
+            </div>
+            <div class="card">
+                <h3>⏰ السداد المبكر</h3>
+                <p>احسب كم راح توفر لو سددت مبكر</p>
+                <a href="early-payment.html" class="btn btn-primary">احسب التوفير</a>
+            </div>
+            <div class="card">
+                <h3>📚 توعية مالية</h3>
+                <p>مقالات ونصائح تساعدك تفهم القروض أكثر</p>
+                <a href="education.html" class="btn btn-primary">اقرأ المزيد</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-grid">
+                <div>
+                    <h3>💰 Cashophy</h3>
+                    <p>حاسبة القروض الذكية - افهم قرضك قبل ما تاخذه</p>
+                </div>
+                <div>
+                    <h3>روابط سريعة</h3>
+                    <p><a href="calculator.html">حاسبة القروض</a></p>
+                    <p><a href="salary-calculator.html">حاسبة الراتب</a></p>
+                    <p><a href="analysis.html">التحليل المالي</a></p>
+                </div>
+                <div>
+                    <h3>معلومات</h3>
+                    <p><a href="about.html">من نحن</a></p>
+                    <p><a href="education.html">المكتبة التوعوية</a></p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2024 Cashophy - جميع الحقوق محفوظة</p>
+                <p>الموقع للأغراض التعليمية فقط - استشر مستشار مالي قبل اتخاذ أي قرار</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/calculator.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

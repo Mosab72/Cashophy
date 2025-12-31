@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>التحليل المالي الشامل - Cashophy</title>
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-brand">
+                <h1>💰 Cashophy</h1>
+            </div>
+            <ul class="navbar-menu">
+                <li><a href="index.html">الرئيسية</a></li>
+                <li><a href="calculator.html">حاسبة القروض</a></li>
+                <li><a href="salary-calculator.html">حاسبة الراتب</a></li>
+                <li><a href="analysis.html">التحليل المالي</a></li>
+                <li><a href="about.html">من نحن</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>🎯 التحليل المالي الشامل</h1>
+        <p>احصل على تقييم شامل لوضعك المالي مع مؤشر الخطر ونصائح مخصصة</p>
+
+        <div class="card">
+            <h2 class="card-title">أدخل بياناتك الكاملة</h2>
+            
+            <div class="grid grid-2">
+                <div class="form-group">
+                    <label class="form-label">راتبك الشهري (ريال)</label>
+                    <input type="number" id="analysis-salary" class="form-input" value="15000">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">مبلغ القرض (ريال)</label>
+                    <input type="number" id="analysis-amount" class="form-input" value="100000">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">نسبة الفائدة السنوية (%)</label>
+                    <input type="number" id="analysis-rate" class="form-input" value="4.5" step="0.1">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">مدة القرض (سنوات)</label>
+                    <input type="number" id="analysis-years" class="form-input" value="5">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">التزامات أخرى (ريال)</label>
+                    <input type="number" id="analysis-debts" class="form-input" value="0">
+                </div>
+            </div>
+
+            <button onclick="performAnalysis()" class="btn btn-primary btn-block">ابدأ التحليل 🚀</button>
+        </div>
+
+        <div id="analysis-results" style="display: none; margin-top: 2rem;">
+            <h2>📊 نتائج التحليل</h2>
+            
+            <div class="card" style="text-align: center; padding: 3rem;">
+                <h3>مؤشر الخطر المالي</h3>
+                <div style="font-size: 4rem; font-weight: 700; color: var(--primary-color); margin: 1rem 0;" id="risk-score">-</div>
+                <div style="font-size: 1.25rem; font-weight: 600;" id="risk-status">-</div>
+            </div>
+
+            <div class="grid grid-3">
+                <div class="result-item">
+                    <div class="result-label">نسبة الاستقطاع الكلية</div>
+                    <div class="result-value" id="total-ratio">0%</div>
+                    <span id="ratio-status" class="result-percentage">-</span>
+                </div>
+
+                <div class="result-item">
+                    <div class="result-label">نسبة الفائدة من القرض</div>
+                    <div class="result-value" id="interest-pct">0%</div>
+                </div>
+
+                <div class="result-item">
+                    <div class="result-label">نسبة القرض للراتب السنوي</div>
+                    <div class="result-value" id="loan-to-salary">0%</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>💡 التوصيات والنصائح</h3>
+                <div id="recommendations"></div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-bottom">
+                <p>© 2024 Cashophy - جميع الحقوق محفوظة</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/calculator.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        function performAnalysis() {
+            const salary = parseFloat(document.getElementById('analysis-salary').value);
+            const amount = parseFloat(document.getElementById('analysis-amount').value);
+            const rate = parseFloat(document.getElementById('analysis-rate').value);
+            const years = parseFloat(document.getElementById('analysis-years').value);
+            const debts = parseFloat(document.getElementById('analysis-debts').value) || 0;
+
+            if (!salary || !amount || !rate || !years) {
+                alert('الرجاء إدخال جميع البيانات');
+                return;
+            }
+
+            const loanDetails = LoanCalculator.calculateLoanDetails(amount, rate, years, 'fixed');
+            const debtRatio = LoanCalculator.calculateDebtRatio(salary, loanDetails.monthlyPayment, debts);
+            const loanToSalary = (amount / (salary * 12)) * 100;
+            
+            const riskScore = LoanCalculator.calculateRiskScore(
+                debtRatio.ratio,
+                rate,
+                loanToSalary
+            );
+
+            // عرض النتائج
+            document.getElementById('risk-score').textContent = riskScore + '/100';
+            document.getElementById('total-ratio').textContent = formatPercentage(debtRatio.ratio);
+            document.getElementById('interest-pct').textContent = formatPercentage(loanDetails.interestRate);
+            document.getElementById('loan-to-salary').textContent = formatPercentage(loanToSalary);
+
+            // تحديد حالة المخاطرة
+            const scoreDiv = document.getElementById('risk-score');
+            const statusDiv = document.getElementById('risk-status');
+            const ratioStatus = document.getElementById('ratio-status');
+
+            if (riskScore >= 80) {
+                scoreDiv.style.color = '#22c55e';
+                statusDiv.textContent = '✓ وضع مالي ممتاز';
+                statusDiv.style.color = '#22c55e';
+                ratioStatus.textContent = '✓ آمن';
+                ratioStatus.style.background = '#22c55e';
+            } else if (riskScore >= 60) {
+                scoreDiv.style.color = '#f59e0b';
+                statusDiv.textContent = '⚠ وضع مالي متوسط';
+                statusDiv.style.color = '#f59e0b';
+                ratioStatus.textContent = '⚠ متوسط';
+                ratioStatus.style.background = '#f59e0b';
+            } else {
+                scoreDiv.style.color = '#ef4444';
+                statusDiv.textContent = '✗ وضع مالي يحتاج تحسين';
+                statusDiv.style.color = '#ef4444';
+                ratioStatus.textContent = '✗ خطر';
+                ratioStatus.style.background = '#ef4444';
+            }
+
+            // التوصيات
+            let recommendations = '<ul style="line-height: 2;">';
+            
+            if (debtRatio.ratio > 33) {
+                recommendations += '<li>⚠️ نسبة الاستقطاع عالية - حاول تقليل المبلغ أو زيادة المدة</li>';
+            }
+            
+            if (loanDetails.interestRate > 25) {
+                recommendations += '<li>💡 الفائدة عالية - قارن مع عروض أخرى قد تكون أفضل</li>';
+            }
+            
+            if (loanToSalary > 500) {
+                recommendations += '<li>⚠️ القرض كبير نسبة لراتبك - راجع احتياجك الفعلي</li>';
+            }
+            
+            if (riskScore >= 80) {
+                recommendations += '<li>✓ وضعك المالي ممتاز - القرض ضمن قدرتك المالية</li>';
+            }
+            
+            recommendations += '<li>💰 فكر في السداد المبكر لتوفير الفوائد</li>';
+            recommendations += '<li>📊 احتفظ بمبلغ طوارئ يعادل 3-6 أشهر من راتبك</li>';
+            recommendations += '</ul>';
+
+            document.getElementById('recommendations').innerHTML = recommendations;
+
+            document.getElementById('analysis-results').style.display = 'block';
+            document.getElementById('analysis-results').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

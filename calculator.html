@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حاسبة القروض الشاملة - Cashophy</title>
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-brand">
+                <h1>💰 Cashophy</h1>
+            </div>
+            <ul class="navbar-menu">
+                <li><a href="index.html">الرئيسية</a></li>
+                <li><a href="calculator.html">حاسبة القروض</a></li>
+                <li><a href="salary-calculator.html">حاسبة الراتب</a></li>
+                <li><a href="analysis.html">التحليل المالي</a></li>
+                <li><a href="about.html">من نحن</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>📊 حاسبة القروض الشاملة</h1>
+        <p>احسب قرضك بدقة واعرف كل التفاصيل - القسط الشهري، الفائدة، النسب</p>
+
+        <div class="card">
+            <h2 class="card-title">أدخل بيانات القرض</h2>
+            
+            <div class="grid grid-2">
+                <div class="form-group">
+                    <label class="form-label">مبلغ القرض (ريال)</label>
+                    <input type="number" id="loan-amount" class="form-input" placeholder="مثال: 100000" value="100000">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">مدة القرض (سنوات)</label>
+                    <input type="number" id="loan-years" class="form-input" placeholder="مثال: 5" value="5">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">نسبة الفائدة السنوية (%)</label>
+                    <input type="number" id="loan-rate" class="form-input" placeholder="مثال: 4.5" value="4.5" step="0.1">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">نوع الفائدة</label>
+                    <select id="interest-type" class="form-select">
+                        <option value="fixed">فائدة ثابتة</option>
+                        <option value="reducing">فائدة متناقصة</option>
+                    </select>
+                </div>
+            </div>
+
+            <button onclick="calculateLoan()" class="btn btn-primary btn-block">احسب الآن 🚀</button>
+        </div>
+
+        <div id="results" style="display: none; margin-top: 2rem;">
+            <h2>📈 نتائج الحساب</h2>
+            
+            <div class="grid grid-2">
+                <div class="result-item">
+                    <div class="result-label">القسط الشهري</div>
+                    <div class="result-value" id="monthly-payment">0 ريال</div>
+                    <span class="result-percentage" id="payment-ratio">0%</span>
+                    <div class="result-description">هذا المبلغ راح يطلع من حسابك كل شهر</div>
+                </div>
+
+                <div class="result-item">
+                    <div class="result-label">إجمالي الفائدة</div>
+                    <div class="result-value" id="total-interest">0 ريال</div>
+                    <span class="result-percentage" id="interest-ratio">0%</span>
+                    <div class="result-description">المبلغ الزائد اللي راح تدفعه للبنك</div>
+                </div>
+
+                <div class="result-item">
+                    <div class="result-label">إجمالي المدفوع</div>
+                    <div class="result-value" id="total-payment">0 ريال</div>
+                    <div class="result-description">المبلغ الكلي اللي راح تدفعه طوال مدة القرض</div>
+                </div>
+
+                <div class="result-item">
+                    <div class="result-label">نسبة الفائدة من القرض</div>
+                    <div class="result-value" id="interest-percentage">0%</div>
+                    <div class="result-description">النسبة المئوية للفائدة من مبلغ القرض الأصلي</div>
+                </div>
+            </div>
+
+            <div id="alert-container"></div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-bottom">
+                <p>© 2024 Cashophy - جميع الحقوق محفوظة</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/calculator.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        function calculateLoan() {
+            const amount = parseFloat(document.getElementById('loan-amount').value);
+            const years = parseFloat(document.getElementById('loan-years').value);
+            const rate = parseFloat(document.getElementById('loan-rate').value);
+            const type = document.getElementById('interest-type').value;
+
+            if (!amount || !years || !rate) {
+                alert('الرجاء إدخال جميع البيانات');
+                return;
+            }
+
+            const result = LoanCalculator.calculateLoanDetails(amount, rate, years, type);
+
+            document.getElementById('monthly-payment').textContent = formatCurrency(result.monthlyPayment);
+            document.getElementById('total-interest').textContent = formatCurrency(result.totalInterest);
+            document.getElementById('total-payment').textContent = formatCurrency(result.totalPayment);
+            document.getElementById('interest-percentage').textContent = formatPercentage(result.interestRate);
+            document.getElementById('payment-ratio').textContent = formatPercentage(result.paymentToLoanRatio);
+            document.getElementById('interest-ratio').textContent = formatPercentage(result.interestRate);
+
+            // عرض تحذير حسب نسبة الفائدة
+            const alertContainer = document.getElementById('alert-container');
+            if (result.interestRate > 30) {
+                alertContainer.innerHTML = '<div class="alert alert-danger">⚠️ تحذير! نسبة الفائدة عالية جداً - راح تدفع أكثر من 30% زيادة على المبلغ</div>';
+            } else if (result.interestRate > 20) {
+                alertContainer.innerHTML = '<div class="alert alert-warning">⚠️ انتبه! نسبة الفائدة عالية نوعاً ما</div>';
+            } else {
+                alertContainer.innerHTML = '<div class="alert alert-success">✓ نسبة الفائدة معقولة</div>';
+            }
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
