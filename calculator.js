@@ -1,203 +1,357 @@
-// ====================================
-// Cashophy - المعادلات المالية
-// ====================================
+/**
+ * ===============================================
+ * المعادلات المالية - Calculator Functions
+ * جميع الحسابات المتعلقة بالقروض والفوائد
+ * ===============================================
+ */
 
-const LoanCalculator = {
-    // حساب القسط الشهري - فائدة ثابتة
-    calculateFixedPayment(principal, annualRate, months) {
-        const monthlyRate = annualRate / 100 / 12;
-        if (monthlyRate === 0) return principal / months;
-        
-        const payment = (principal * monthlyRate * Math.pow(1 + monthlyRate, months)) / 
-                       (Math.pow(1 + monthlyRate, months) - 1);
-        return payment;
-    },
+/**
+ * حساب القسط الشهري للفائدة الثابتة (Fixed Rate)
+ * المعادلة: PMT = P * [r(1+r)^n] / [(1+r)^n - 1]
+ * 
+ * @param {number} principal - مبلغ القرض الأساسي
+ * @param {number} annualRate - نسبة الفائدة السنوية (%)
+ * @param {number} months - مدة القرض بالأشهر
+ * @returns {number} - القسط الشهري
+ */
+function calculateFixedMonthlyPayment(principal, annualRate, months) {
+  if (annualRate === 0) {
+    return principal / months;
+  }
+  
+  const monthlyRate = annualRate / 100 / 12;
+  const payment = principal * (monthlyRate * Math.pow(1 + monthlyRate, months)) / 
+                  (Math.pow(1 + monthlyRate, months) - 1);
+  
+  return payment;
+}
 
-    // حساب التفاصيل الكاملة للقرض
-    calculateLoanDetails(principal, annualRate, years, interestType = 'fixed') {
-        const months = years * 12;
-        let monthlyPayment, totalInterest, totalPayment;
+/**
+ * حساب القسط الشهري للفائدة المتناقصة (Reducing Rate)
+ * القسط الأول = (مبلغ القرض / عدد الأشهر) + (مبلغ القرض * نسبة الفائدة الشهرية)
+ * 
+ * @param {number} principal - مبلغ القرض الأساسي
+ * @param {number} annualRate - نسبة الفائدة السنوية (%)
+ * @param {number} months - مدة القرض بالأشهر
+ * @returns {object} - {firstPayment, lastPayment, averagePayment}
+ */
+function calculateReducingMonthlyPayment(principal, annualRate, months) {
+  const monthlyPrincipal = principal / months;
+  const monthlyRate = annualRate / 100 / 12;
+  
+  // أول قسط (أعلى قسط)
+  const firstPayment = monthlyPrincipal + (principal * monthlyRate);
+  
+  // آخر قسط (أقل قسط)
+  const lastPayment = monthlyPrincipal + (monthlyPrincipal * monthlyRate);
+  
+  // متوسط القسط
+  const averagePayment = (firstPayment + lastPayment) / 2;
+  
+  return {
+    firstPayment,
+    lastPayment,
+    averagePayment
+  };
+}
 
-        if (interestType === 'fixed') {
-            monthlyPayment = this.calculateFixedPayment(principal, annualRate, months);
-            totalPayment = monthlyPayment * months;
-            totalInterest = totalPayment - principal;
-        } else {
-            // فائدة متناقصة
-            const schedule = this.generateReducingSchedule(principal, annualRate, months);
-            totalPayment = schedule.reduce((sum, item) => sum + item.payment, 0);
-            totalInterest = totalPayment - principal;
-            monthlyPayment = schedule[0].payment;
-        }
+/**
+ * حساب إجمالي الفائدة للفائدة الثابتة
+ * 
+ * @param {number} monthlyPayment - القسط الشهري
+ * @param {number} months - عدد الأشهر
+ * @param {number} principal - مبلغ القرض الأساسي
+ * @returns {number} - إجمالي الفائدة
+ */
+function calculateTotalInterestFixed(monthlyPayment, months, principal) {
+  const totalPaid = monthlyPayment * months;
+  return totalPaid - principal;
+}
 
-        return {
-            monthlyPayment,
-            totalInterest,
-            totalPayment,
-            interestRate: (totalInterest / principal) * 100,
-            paymentToLoanRatio: (monthlyPayment / principal) * 100
-        };
-    },
+/**
+ * حساب إجمالي الفائدة للفائدة المتناقصة
+ * 
+ * @param {number} principal - مبلغ القرض الأساسي
+ * @param {number} annualRate - نسبة الفائدة السنوية (%)
+ * @param {number} months - مدة القرض بالأشهر
+ * @returns {number} - إجمالي الفائدة
+ */
+function calculateTotalInterestReducing(principal, annualRate, months) {
+  const monthlyRate = annualRate / 100 / 12;
+  const monthlyPrincipal = principal / months;
+  
+  let totalInterest = 0;
+  let remainingBalance = principal;
+  
+  for (let i = 0; i < months; i++) {
+    const interestForMonth = remainingBalance * monthlyRate;
+    totalInterest += interestForMonth;
+    remainingBalance -= monthlyPrincipal;
+  }
+  
+  return totalInterest;
+}
 
-    // جدول السداد - فائدة متناقصة
-    generateReducingSchedule(principal, annualRate, months) {
-        const schedule = [];
-        let balance = principal;
-        const principalPayment = principal / months;
-        const monthlyRate = annualRate / 100 / 12;
+/**
+ * حساب القرض الكامل (شامل جميع التفاصيل)
+ * 
+ * @param {number} principal - مبلغ القرض
+ * @param {number} annualRate - نسبة الفائدة السنوية (%)
+ * @param {number} years - مدة القرض بالسنوات
+ * @param {string} interestType - نوع الفائدة ('fixed' or 'reducing')
+ * @returns {object} - كامل تفاصيل القرض
+ */
+function calculateLoan(principal, annualRate, years, interestType = 'fixed') {
+  const months = Math.round(years * 12);
+  
+  let monthlyPayment, totalInterest, totalAmount;
+  let paymentDetails = {};
+  
+  if (interestType === 'reducing') {
+    const reducingPayment = calculateReducingMonthlyPayment(principal, annualRate, months);
+    monthlyPayment = reducingPayment.averagePayment;
+    totalInterest = calculateTotalInterestReducing(principal, annualRate, months);
+    paymentDetails = reducingPayment;
+  } else {
+    monthlyPayment = calculateFixedMonthlyPayment(principal, annualRate, months);
+    totalInterest = calculateTotalInterestFixed(monthlyPayment, months, principal);
+  }
+  
+  totalAmount = principal + totalInterest;
+  
+  const interestPercentage = (totalInterest / principal) * 100;
+  const monthlyPaymentPercentage = (monthlyPayment / principal) * 100;
+  
+  return {
+    monthlyPayment: Math.round(monthlyPayment),
+    totalInterest: Math.round(totalInterest),
+    totalAmount: Math.round(totalAmount),
+    interestPercentage: interestPercentage,
+    monthlyPaymentPercentage: monthlyPaymentPercentage,
+    months: months,
+    interestType: interestType,
+    ...paymentDetails
+  };
+}
 
-        for (let i = 1; i <= months; i++) {
-            const interestPayment = balance * monthlyRate;
-            const payment = principalPayment + interestPayment;
-            balance -= principalPayment;
+/**
+ * حساب نسبة الاستقطاع من الراتب
+ * 
+ * @param {number} salary - الراتب الشهري
+ * @param {number} monthlyPayment - القسط الشهري
+ * @param {number} otherCommitments - الالتزامات الأخرى
+ * @returns {object} - تفاصيل الاستقطاع
+ */
+function calculateDebtRatio(salary, monthlyPayment, otherCommitments = 0) {
+  const totalCommitments = monthlyPayment + otherCommitments;
+  const debtRatio = (totalCommitments / salary) * 100;
+  const netSalary = salary - totalCommitments;
+  const netSalaryPercentage = (netSalary / salary) * 100;
+  
+  let status, message;
+  
+  if (debtRatio <= 25) {
+    status = 'safe';
+    message = 'وضعك المالي ممتاز وآمن جداً 👍';
+  } else if (debtRatio <= 33) {
+    status = 'acceptable';
+    message = 'وضعك المالي مقبول، لكن انتبه من زيادة الالتزامات ⚠️';
+  } else if (debtRatio <= 40) {
+    status = 'warning';
+    message = 'نسبة الاستقطاع عالية! حاول تقليل الالتزامات 🔴';
+  } else {
+    status = 'danger';
+    message = 'نسبة الاستقطاع خطيرة جداً! راح تؤثر على حياتك اليومية 🚨';
+  }
+  
+  return {
+    totalCommitments: Math.round(totalCommitments),
+    debtRatio: debtRatio,
+    netSalary: Math.round(netSalary),
+    netSalaryPercentage: netSalaryPercentage,
+    status: status,
+    message: message
+  };
+}
 
-            schedule.push({
-                month: i,
-                principal: principalPayment,
-                interest: interestPayment,
-                payment: payment,
-                balance: Math.max(0, balance)
-            });
-        }
+/**
+ * حساب أقصى مبلغ قرض يمكن الحصول عليه بأمان
+ * 
+ * @param {number} salary - الراتب الشهري
+ * @param {number} annualRate - نسبة الفائدة السنوية (%)
+ * @param {number} years - مدة القرض المطلوبة بالسنوات
+ * @param {number} otherCommitments - الالتزامات الحالية
+ * @param {number} maxDebtRatio - الحد الأقصى للاستقطاع (% من الراتب)
+ * @returns {object} - تفاصيل القدرة على الاقتراض
+ */
+function calculateBorrowingCapacity(salary, annualRate, years, otherCommitments = 0, maxDebtRatio = 33) {
+  const months = years * 12;
+  const maxMonthlyPayment = (salary * (maxDebtRatio / 100)) - otherCommitments;
+  
+  if (maxMonthlyPayment <= 0) {
+    return {
+      maxLoanAmount: 0,
+      monthlyPayment: 0,
+      debtRatio: 0,
+      status: 'cannot_borrow',
+      message: 'للأسف، التزاماتك الحالية تمنعك من الاقتراض بشكل آمن'
+    };
+  }
+  
+  // حساب المبلغ بناءً على القسط الشهري المتاح
+  const monthlyRate = annualRate / 100 / 12;
+  let maxLoanAmount;
+  
+  if (monthlyRate === 0) {
+    maxLoanAmount = maxMonthlyPayment * months;
+  } else {
+    maxLoanAmount = maxMonthlyPayment * (Math.pow(1 + monthlyRate, months) - 1) / 
+                    (monthlyRate * Math.pow(1 + monthlyRate, months));
+  }
+  
+  const actualDebtRatio = (maxMonthlyPayment / salary) * 100;
+  
+  let status, message;
+  if (actualDebtRatio <= 25) {
+    status = 'excellent';
+    message = 'قدرتك على الاقتراض ممتازة 👍';
+  } else if (actualDebtRatio <= 33) {
+    status = 'good';
+    message = 'قدرتك على الاقتراض جيدة ✓';
+  } else {
+    status = 'limited';
+    message = 'قدرتك على الاقتراض محدودة ⚠️';
+  }
+  
+  return {
+    maxLoanAmount: Math.round(maxLoanAmount),
+    monthlyPayment: Math.round(maxMonthlyPayment),
+    debtRatio: actualDebtRatio,
+    status: status,
+    message: message
+  };
+}
 
-        return schedule;
-    },
-
-    // جدول السداد - فائدة ثابتة
-    generateFixedSchedule(principal, annualRate, months) {
-        const schedule = [];
-        let balance = principal;
-        const monthlyPayment = this.calculateFixedPayment(principal, annualRate, months);
-        const monthlyRate = annualRate / 100 / 12;
-
-        for (let i = 1; i <= months; i++) {
-            const interestPayment = balance * monthlyRate;
-            const principalPayment = monthlyPayment - interestPayment;
-            balance -= principalPayment;
-
-            schedule.push({
-                month: i,
-                principal: principalPayment,
-                interest: interestPayment,
-                payment: monthlyPayment,
-                balance: Math.max(0, balance)
-            });
-        }
-
-        return schedule;
-    },
-
-    // حساب نسبة الاستقطاع
-    calculateDebtRatio(salary, monthlyPayment, otherDebts = 0) {
-        const totalDebt = monthlyPayment + otherDebts;
-        const ratio = (totalDebt / salary) * 100;
-        
-        let status, message;
-        if (ratio < 25) {
-            status = 'safe';
-            message = 'وضعك المالي ممتاز! نسبة الاستقطاع آمنة جداً.';
-        } else if (ratio < 33) {
-            status = 'moderate';
-            message = 'وضعك المالي جيد، لكن قريب من الحد الأعلى المسموح.';
-        } else if (ratio < 50) {
-            status = 'warning';
-            message = 'تحذير! نسبة الاستقطاع عالية - قد تواجه ضغط مالي.';
-        } else {
-            status = 'danger';
-            message = 'خطر! نسبة الاستقطاع مرتفعة جداً - غير مستحسن أبداً.';
-        }
-
-        return {
-            ratio,
-            status,
-            message,
-            netSalary: salary - totalDebt
-        };
-    },
-
-    // حساب أقصى قرض ممكن
-    calculateMaxLoan(salary, otherDebts, annualRate, years, maxRatio = 33) {
-        const maxMonthlyPayment = (salary * maxRatio / 100) - otherDebts;
-        const months = years * 12;
-        const monthlyRate = annualRate / 100 / 12;
-
-        if (maxMonthlyPayment <= 0) return 0;
-
-        const maxLoan = (maxMonthlyPayment * (Math.pow(1 + monthlyRate, months) - 1)) / 
-                       (monthlyRate * Math.pow(1 + monthlyRate, months));
-
-        return Math.max(0, maxLoan);
-    },
-
-    // حساب السداد المبكر
-    calculateEarlyPayment(principal, annualRate, years, earlyPaymentAmount, whenMonths) {
-        const totalMonths = years * 12;
-        const monthlyPayment = this.calculateFixedPayment(principal, annualRate, totalMonths);
-        
-        // الفائدة الكلية بدون سداد مبكر
-        const originalInterest = (monthlyPayment * totalMonths) - principal;
-        
-        // حساب الرصيد المتبقي عند السداد المبكر
-        const monthlyRate = annualRate / 100 / 12;
-        let balance = principal;
-        
-        for (let i = 0; i < whenMonths; i++) {
-            const interest = balance * monthlyRate;
-            const principalPaid = monthlyPayment - interest;
-            balance -= principalPaid;
-        }
-        
-        // رصيد جديد بعد السداد المبكر
-        const newBalance = balance - earlyPaymentAmount;
-        if (newBalance <= 0) {
-            return {
-                savedInterest: originalInterest - (monthlyPayment * whenMonths - (principal - balance)),
-                savedMonths: totalMonths - whenMonths,
-                newBalance: 0,
-                completed: true
-            };
-        }
-        
-        // حساب المدة الجديدة
-        const newMonths = Math.ceil(Math.log(monthlyPayment / (monthlyPayment - newBalance * monthlyRate)) / Math.log(1 + monthlyRate));
-        const newTotalPayment = monthlyPayment * newMonths;
-        const newInterest = newTotalPayment - newBalance;
-        
-        return {
-            savedInterest: originalInterest - newInterest - (balance - newBalance),
-            savedMonths: totalMonths - whenMonths - newMonths,
-            newBalance: newBalance,
-            newMonths: newMonths,
-            completed: false
-        };
-    },
-
-    // مؤشر الخطر المالي (من 100)
-    calculateRiskScore(debtRatio, interestRate, loanToSalaryRatio) {
-        let score = 100;
-        
-        // تأثير نسبة الاستقطاع (50 نقطة)
-        if (debtRatio < 25) score -= 0;
-        else if (debtRatio < 33) score -= 15;
-        else if (debtRatio < 50) score -= 35;
-        else score -= 50;
-        
-        // تأثير نسبة الفائدة (30 نقطة)
-        if (interestRate < 5) score -= 0;
-        else if (interestRate < 10) score -= 10;
-        else if (interestRate < 15) score -= 20;
-        else score -= 30;
-        
-        // تأثير نسبة القرض للراتب (20 نقطة)
-        if (loanToSalaryRatio < 12) score -= 0;
-        else if (loanToSalaryRatio < 24) score -= 10;
-        else score -= 20;
-        
-        return Math.max(0, score);
+/**
+ * حساب جدول السداد الشهري
+ * 
+ * @param {number} principal - مبلغ القرض
+ * @param {number} annualRate - نسبة الفائدة السنوية (%)
+ * @param {number} months - عدد الأشهر
+ * @param {string} interestType - نوع الفائدة
+ * @returns {array} - مصفوفة تحتوي على تفاصيل كل قسط
+ */
+function generatePaymentSchedule(principal, annualRate, months, interestType = 'fixed') {
+  const schedule = [];
+  const monthlyRate = annualRate / 100 / 12;
+  
+  if (interestType === 'reducing') {
+    const monthlyPrincipal = principal / months;
+    let remainingBalance = principal;
+    
+    for (let i = 1; i <= months; i++) {
+      const interestPayment = remainingBalance * monthlyRate;
+      const totalPayment = monthlyPrincipal + interestPayment;
+      remainingBalance -= monthlyPrincipal;
+      
+      schedule.push({
+        month: i,
+        principalPayment: Math.round(monthlyPrincipal),
+        interestPayment: Math.round(interestPayment),
+        totalPayment: Math.round(totalPayment),
+        remainingBalance: Math.max(0, Math.round(remainingBalance))
+      });
     }
-};
+  } else {
+    const monthlyPayment = calculateFixedMonthlyPayment(principal, annualRate, months);
+    let remainingBalance = principal;
+    
+    for (let i = 1; i <= months; i++) {
+      const interestPayment = remainingBalance * monthlyRate;
+      const principalPayment = monthlyPayment - interestPayment;
+      remainingBalance -= principalPayment;
+      
+      schedule.push({
+        month: i,
+        principalPayment: Math.round(principalPayment),
+        interestPayment: Math.round(interestPayment),
+        totalPayment: Math.round(monthlyPayment),
+        remainingBalance: Math.max(0, Math.round(remainingBalance))
+      });
+    }
+  }
+  
+  return schedule;
+}
 
-// تصدير للاستخدام
+/**
+ * حساب الوفورات من السداد المبكر
+ * 
+ * @param {number} principal - مبلغ القرض الأصلي
+ * @param {number} annualRate - نسبة الفائدة السنوية (%)
+ * @param {number} months - مدة القرض الكلية بالأشهر
+ * @param {number} paidMonths - عدد الأشهر المدفوعة
+ * @param {number} earlyPaymentAmount - مبلغ السداد المبكر
+ * @returns {object} - تفاصيل الوفورات
+ */
+function calculateEarlyPaymentSavings(principal, annualRate, months, paidMonths, earlyPaymentAmount) {
+  const monthlyPayment = calculateFixedMonthlyPayment(principal, annualRate, months);
+  const monthlyRate = annualRate / 100 / 12;
+  
+  // حساب الرصيد المتبقي
+  let remainingBalance = principal;
+  for (let i = 0; i < paidMonths; i++) {
+    const interest = remainingBalance * monthlyRate;
+    const principalPaid = monthlyPayment - interest;
+    remainingBalance -= principalPaid;
+  }
+  
+  // الفائدة المتبقية بدون سداد مبكر
+  const remainingMonths = months - paidMonths;
+  const totalRemainingPayments = monthlyPayment * remainingMonths;
+  const interestWithoutEarlyPayment = totalRemainingPayments - remainingBalance;
+  
+  // الرصيد الجديد بعد السداد المبكر
+  const newBalance = remainingBalance - earlyPaymentAmount;
+  
+  if (newBalance <= 0) {
+    return {
+      interestSaved: Math.round(interestWithoutEarlyPayment),
+      timeSaved: remainingMonths,
+      newMonthlyPayment: 0,
+      newBalance: 0,
+      totalSavings: Math.round(interestWithoutEarlyPayment)
+    };
+  }
+  
+  // حساب المدة الجديدة بنفس القسط
+  const newMonths = Math.ceil(Math.log(monthlyPayment / (monthlyPayment - newBalance * monthlyRate)) / 
+                              Math.log(1 + monthlyRate));
+  const timeSaved = remainingMonths - newMonths;
+  
+  // الفائدة الجديدة
+  const newTotalPayments = monthlyPayment * newMonths;
+  const interestWithEarlyPayment = newTotalPayments - newBalance;
+  const interestSaved = interestWithoutEarlyPayment - interestWithEarlyPayment;
+  
+  return {
+    interestSaved: Math.round(interestSaved),
+    timeSaved: timeSaved,
+    newMonthlyPayment: Math.round(monthlyPayment),
+    newBalance: Math.round(newBalance),
+    totalSavings: Math.round(interestSaved)
+  };
+}
+
+// تصدير الدوال
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = LoanCalculator;
+  module.exports = {
+    calculateFixedMonthlyPayment,
+    calculateReducingMonthlyPayment,
+    calculateLoan,
+    calculateDebtRatio,
+    calculateBorrowingCapacity,
+    generatePaymentSchedule,
+    calculateEarlyPaymentSavings
+  };
 }
