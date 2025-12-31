@@ -3,132 +3,553 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cashophy - حاسبة القروض الذكية</title>
-    <meta name="description" content="احسب قرضك بدقة واعرف تأثيره الحقيقي على راتبك ونمط حياتك">
+    <meta name="description" content="احسب قروضك بدقة وافهم التأثير الحقيقي على راتبك ونمط حياتك - موقع احترافي لحساب القروض والفوائد">
+    <meta name="keywords" content="حاسبة قروض، قروض سعودية، حاسبة الفائدة، قرض شخصي، تمويل">
+    <title>حاسبة القروض الذكية - افهم قرضك قبل ما تاخذه</title>
+    
+    <!-- CSS Files -->
     <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <!-- Navbar -->
     <nav class="navbar">
-        <div class="navbar-container">
-            <div class="navbar-brand">
-                <h1>💰 Cashophy</h1>
-            </div>
+        <div class="container">
+            <a href="index.html" class="navbar-brand">
+                <i class="fas fa-calculator navbar-brand-icon"></i>
+                <span class="navbar-brand-text">حاسبة القروض</span>
+            </a>
+            
+            <button class="navbar-toggle" aria-label="القائمة">
+                <i class="fas fa-bars"></i>
+            </button>
+            
             <ul class="navbar-menu">
-                <li><a href="index.html">الرئيسية</a></li>
+                <li><a href="index.html" class="active">الرئيسية</a></li>
                 <li><a href="calculator.html">حاسبة القروض</a></li>
                 <li><a href="salary-calculator.html">حاسبة الراتب</a></li>
-                <li><a href="analysis.html">التحليل المالي</a></li>
+                <li><a href="financial-analysis.html">التحليل المالي</a></li>
+                <li><a href="education.html">مكتبة توعوية</a></li>
                 <li><a href="about.html">من نحن</a></li>
             </ul>
-            <button class="navbar-toggle">☰</button>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <section class="hero">
+    <section class="hero-section">
         <div class="container">
-            <h1>افهم قرضك قبل ما تاخذه</h1>
-            <p>احسب التأثير الحقيقي للقرض على راتبك ونمط حياتك بأرقام واضحة ونسب دقيقة</p>
+            <div class="hero-content">
+                <h1 class="hero-title">افهم قرضك قبل ما تاخذه 💰</h1>
+                <p class="hero-description">
+                    موقع احترافي يساعدك تفهم التأثير الحقيقي للقروض على راتبك ونمط حياتك.<br>
+                    حسابات دقيقة، نتائج واضحة، ونصائح عملية تساعدك تاخذ القرار الصح.
+                </p>
+                <div class="hero-features">
+                    <div class="hero-feature">
+                        <i class="fas fa-calculator-alt"></i>
+                        <span>حسابات دقيقة ومباشرة</span>
+                    </div>
+                    <div class="hero-feature">
+                        <i class="fas fa-chart-line"></i>
+                        <span>نسب مئوية واضحة</span>
+                    </div>
+                    <div class="hero-feature">
+                        <i class="fas fa-shield-check"></i>
+                        <span>تحليل مالي شامل</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
-    <!-- Quick Calculator -->
-    <div class="container">
-        <div class="card">
-            <h2 class="card-title">⚡ حاسبة سريعة</h2>
-            <div class="grid grid-3">
-                <div class="form-group">
-                    <label class="form-label">مبلغ القرض (ريال)</label>
-                    <input type="number" id="quick-amount" class="form-input" placeholder="مثال: 100000" value="100000">
+    <!-- Quick Calculator Section -->
+    <section class="section quick-calculator-section">
+        <div class="container">
+            <div class="card quick-calculator-card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <i class="fas fa-bolt" style="color: var(--accent-gold);"></i>
+                        حاسبة سريعة - جرّب الحين
+                    </h2>
+                    <p>ادخل أرقامك وشوف النتيجة مباشرة</p>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">مدة القرض (سنوات)</label>
-                    <input type="number" id="quick-years" class="form-input" placeholder="مثال: 5" value="5">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">نسبة الفائدة السنوية (%)</label>
-                    <input type="number" id="quick-rate" class="form-input" placeholder="مثال: 4.5" value="4.5" step="0.1">
+                
+                <div class="card-body">
+                    <div class="grid grid-2">
+                        <div class="form-group">
+                            <label class="form-label" for="quickLoanAmount">مبلغ القرض (ريال)</label>
+                            <input type="number" id="quickLoanAmount" class="form-input" 
+                                   placeholder="مثال: 100000" value="100000" min="1000">
+                            <span class="form-help">المبلغ اللي تبي تاخذه</span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="quickLoanYears">مدة القرض (سنوات)</label>
+                            <input type="number" id="quickLoanYears" class="form-input" 
+                                   placeholder="مثال: 5" value="5" min="1" max="30">
+                            <span class="form-help">كم سنة تبي تسدد</span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="quickInterestRate">نسبة الفائدة السنوية (%)</label>
+                            <input type="number" id="quickInterestRate" class="form-input" 
+                                   placeholder="مثال: 5.5" value="5.5" min="0" max="25" step="0.1">
+                            <span class="form-help">نسبة الفائدة السنوية</span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="quickSalary">راتبك الشهري (ريال)</label>
+                            <input type="number" id="quickSalary" class="form-input" 
+                                   placeholder="مثال: 10000" value="10000" min="1000">
+                            <span class="form-help">عشان نحسب نسبة الاستقطاع</span>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-gold btn-lg btn-block" id="quickCalculateBtn">
+                        <i class="fas fa-calculator"></i> احسب الحين
+                    </button>
                 </div>
             </div>
-            <button id="quick-calc-btn" class="btn btn-primary btn-block">احسب الآن 🚀</button>
+
+            <!-- Quick Results -->
+            <div id="quickResults" class="hidden"></div>
+        </div>
+    </section>
+
+    <!-- Services Grid -->
+    <section class="section services-section">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2>خدماتنا الشاملة</h2>
+                <p>كل اللي تحتاجه عشان تفهم وضعك المالي</p>
+            </div>
             
-            <div id="quick-result" style="display: none; margin-top: 2rem;"></div>
-        </div>
+            <div class="grid grid-3 services-grid">
+                <!-- Service 1 -->
+                <a href="calculator.html" class="service-card card">
+                    <div class="service-icon">
+                        <i class="fas fa-calculator"></i>
+                    </div>
+                    <h3 class="service-title">حاسبة القروض الشاملة</h3>
+                    <p class="service-description">
+                        احسب قرضك بالتفصيل: القسط الشهري، إجمالي الفائدة، ونسبة الفائدة من المبلغ. 
+                        يدعم الفائدة الثابتة والمتناقصة.
+                    </p>
+                    <span class="service-link">جرّب الحاسبة <i class="fas fa-arrow-left"></i></span>
+                </a>
 
-        <!-- Features -->
-        <div class="grid grid-3" style="margin-top: 3rem;">
-            <div class="card">
-                <h3>📊 حسابات دقيقة</h3>
-                <p>معادلات مالية معتمدة لحساب الفائدة الثابتة والمتناقصة بدقة 100%</p>
-                <a href="calculator.html" class="btn btn-primary">جرّب الآن</a>
-            </div>
-            <div class="card">
-                <h3>💸 تحليل الراتب</h3>
-                <p>اعرف نسبة الاستقطاع من راتبك وهل القرض آمن ولا خطر على وضعك المالي</p>
-                <a href="salary-calculator.html" class="btn btn-primary">احسب الآن</a>
-            </div>
-            <div class="card">
-                <h3>🎯 تقييم شامل</h3>
-                <p>مؤشر الخطر المالي ونصائح مخصصة لتحسين وضعك المالي</p>
-                <a href="analysis.html" class="btn btn-primary">ابدأ التحليل</a>
-            </div>
-        </div>
+                <!-- Service 2 -->
+                <a href="salary-calculator.html" class="service-card card">
+                    <div class="service-icon">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <h3 class="service-title">حاسبة الراتب والاستقطاع</h3>
+                    <p class="service-description">
+                        شوف كم راح يتبقى من راتبك بعد القسط، وكم النسبة اللي راح تستقطع. 
+                        مع تحذير لو النسبة خطيرة.
+                    </p>
+                    <span class="service-link">احسب راتبك <i class="fas fa-arrow-left"></i></span>
+                </a>
 
-        <!-- More Services -->
-        <h2 style="margin-top: 3rem; text-align: center;">خدمات إضافية</h2>
-        <div class="grid grid-2" style="margin-top: 2rem;">
-            <div class="card">
-                <h3>📋 جدول السداد</h3>
-                <p>شوف جدول تفصيلي لكل قسط شهري - المبلغ الأصلي والفائدة</p>
-                <a href="payment-schedule.html" class="btn btn-primary">شاهد الجدول</a>
-            </div>
-            <div class="card">
-                <h3>⚖️ مقارنة القروض</h3>
-                <p>قارن بين 3 عروض قروض واعرف الأفضل ليك</p>
-                <a href="loan-comparison.html" class="btn btn-primary">قارن الآن</a>
-            </div>
-            <div class="card">
-                <h3>⏰ السداد المبكر</h3>
-                <p>احسب كم راح توفر لو سددت مبكر</p>
-                <a href="early-payment.html" class="btn btn-primary">احسب التوفير</a>
-            </div>
-            <div class="card">
-                <h3>📚 توعية مالية</h3>
-                <p>مقالات ونصائح تساعدك تفهم القروض أكثر</p>
-                <a href="education.html" class="btn btn-primary">اقرأ المزيد</a>
+                <!-- Service 3 -->
+                <a href="borrowing-capacity.html" class="service-card card">
+                    <div class="service-icon">
+                        <i class="fas fa-hand-holding-dollar"></i>
+                    </div>
+                    <h3 class="service-title">القدرة على الاقتراض</h3>
+                    <p class="service-description">
+                        اعرف كم أقصى مبلغ تقدر تاخذه بأمان بناءً على راتبك والتزاماتك الحالية.
+                    </p>
+                    <span class="service-link">احسب قدرتك <i class="fas fa-arrow-left"></i></span>
+                </a>
+
+                <!-- Service 4 -->
+                <a href="financial-analysis.html" class="service-card card">
+                    <div class="service-icon">
+                        <i class="fas fa-chart-pie"></i>
+                    </div>
+                    <h3 class="service-title">التحليل المالي الشامل</h3>
+                    <p class="service-description">
+                        تحليل كامل لوضعك المالي مع مؤشر الخطر ونصائح مخصصة لتحسين وضعك.
+                    </p>
+                    <span class="service-link">حلل وضعك <i class="fas fa-arrow-left"></i></span>
+                </a>
+
+                <!-- Service 5 -->
+                <a href="payment-schedule.html" class="service-card card">
+                    <div class="service-icon">
+                        <i class="fas fa-table"></i>
+                    </div>
+                    <h3 class="service-title">جدول السداد التفصيلي</h3>
+                    <p class="service-description">
+                        جدول شهري كامل يوضح كل قسط والفائدة والرصيد المتبقي مع إمكانية التصدير.
+                    </p>
+                    <span class="service-link">شوف الجدول <i class="fas fa-arrow-left"></i></span>
+                </a>
+
+                <!-- Service 6 -->
+                <a href="loan-comparison.html" class="service-card card">
+                    <div class="service-icon">
+                        <i class="fas fa-balance-scale"></i>
+                    </div>
+                    <h3 class="service-title">مقارنة القروض</h3>
+                    <p class="service-description">
+                        قارن بين 3 عروض قروض مختلفة واعرف أيهم أفضل بالنسبة لك.
+                    </p>
+                    <span class="service-link">قارن العروض <i class="fas fa-arrow-left"></i></span>
+                </a>
+
+                <!-- Service 7 -->
+                <a href="early-payment.html" class="service-card card">
+                    <div class="service-icon">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <h3 class="service-title">حاسبة السداد المبكر</h3>
+                    <p class="service-description">
+                        احسب كم راح توفر من الفائدة والوقت لو سددت مبلغ إضافي مبكراً.
+                    </p>
+                    <span class="service-link">احسب الوفورات <i class="fas fa-arrow-left"></i></span>
+                </a>
+
+                <!-- Service 8 -->
+                <a href="debt-consolidation.html" class="service-card card">
+                    <div class="service-icon">
+                        <i class="fas fa-compress-arrows-alt"></i>
+                    </div>
+                    <h3 class="service-title">تجميع القروض</h3>
+                    <p class="service-description">
+                        عندك أكثر من قرض؟ شوف إذا تجميعها في قرض واحد راح يفيدك أو لا.
+                    </p>
+                    <span class="service-link">جرّب التجميع <i class="fas fa-arrow-left"></i></span>
+                </a>
+
+                <!-- Service 9 -->
+                <a href="education.html" class="service-card card">
+                    <div class="service-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h3 class="service-title">مكتبة توعوية</h3>
+                    <p class="service-description">
+                        تعلم كل شيء عن القروض: الأنواع، الحسابات، النصائح، والأخطاء الشائعة.
+                    </p>
+                    <span class="service-link">تعلم المزيد <i class="fas fa-arrow-left"></i></span>
+                </a>
             </div>
         </div>
-    </div>
+    </section>
+
+    <!-- Why Us Section -->
+    <section class="section why-us-section">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2>ليش تستخدم موقعنا؟</h2>
+                <p>نساعدك تاخذ قرار صح ومدروس</p>
+            </div>
+            
+            <div class="grid grid-2 why-us-grid">
+                <div class="why-us-card">
+                    <div class="why-us-icon">✅</div>
+                    <h3>حسابات دقيقة ومجانية</h3>
+                    <p>نستخدم المعادلات المالية الدقيقة اللي تستخدمها البنوك، بدون أي رسوم.</p>
+                </div>
+                
+                <div class="why-us-card">
+                    <div class="why-us-icon">📊</div>
+                    <h3>نتائج واضحة بالنسب</h3>
+                    <p>ما نعطيك أرقام بس، نوضح لك النسب والتأثير الحقيقي على حياتك.</p>
+                </div>
+                
+                <div class="why-us-card">
+                    <div class="why-us-icon">🔒</div>
+                    <h3>خصوصية وأمان</h3>
+                    <p>كل حساباتك تتم في جهازك، ما نحفظ أي بيانات شخصية أو مالية.</p>
+                </div>
+                
+                <div class="why-us-card">
+                    <div class="why-us-icon">💡</div>
+                    <h3>نصائح عملية</h3>
+                    <p>ما نكتفي بالأرقام، نعطيك نصائح عملية لتحسين وضعك المالي.</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- Footer -->
     <footer class="footer">
-        <div class="footer-container">
-            <div class="footer-grid">
-                <div>
-                    <h3>💰 Cashophy</h3>
-                    <p>حاسبة القروض الذكية - افهم قرضك قبل ما تاخذه</p>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>عن الموقع</h4>
+                    <p>
+                        موقع احترافي مجاني يساعدك تفهم القروض والتمويل الشخصي بطريقة سهلة وواضحة.
+                        كل الحسابات دقيقة ومبنية على معادلات مالية معتمدة.
+                    </p>
                 </div>
-                <div>
-                    <h3>روابط سريعة</h3>
-                    <p><a href="calculator.html">حاسبة القروض</a></p>
-                    <p><a href="salary-calculator.html">حاسبة الراتب</a></p>
-                    <p><a href="analysis.html">التحليل المالي</a></p>
+                
+                <div class="footer-section">
+                    <h4>روابط سريعة</h4>
+                    <ul class="footer-links">
+                        <li><a href="calculator.html">حاسبة القروض</a></li>
+                        <li><a href="salary-calculator.html">حاسبة الراتب</a></li>
+                        <li><a href="financial-analysis.html">التحليل المالي</a></li>
+                        <li><a href="payment-schedule.html">جدول السداد</a></li>
+                    </ul>
                 </div>
-                <div>
-                    <h3>معلومات</h3>
-                    <p><a href="about.html">من نحن</a></p>
-                    <p><a href="education.html">المكتبة التوعوية</a></p>
+                
+                <div class="footer-section">
+                    <h4>أدوات إضافية</h4>
+                    <ul class="footer-links">
+                        <li><a href="borrowing-capacity.html">القدرة على الاقتراض</a></li>
+                        <li><a href="loan-comparison.html">مقارنة القروض</a></li>
+                        <li><a href="early-payment.html">السداد المبكر</a></li>
+                        <li><a href="education.html">مكتبة توعوية</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>تواصل معنا</h4>
+                    <ul class="footer-links">
+                        <li><a href="about.html">من نحن</a></li>
+                        <li><a href="about.html#contact">اتصل بنا</a></li>
+                        <li><a href="about.html#privacy">سياسة الخصوصية</a></li>
+                    </ul>
                 </div>
             </div>
+            
             <div class="footer-bottom">
-                <p>© 2024 Cashophy - جميع الحقوق محفوظة</p>
-                <p>الموقع للأغراض التعليمية فقط - استشر مستشار مالي قبل اتخاذ أي قرار</p>
+                <p>&copy; 2024 حاسبة القروض الذكية. جميع الحقوق محفوظة.</p>
+                <p style="font-size: 0.9rem; margin-top: 0.5rem; color: #94a3b8;">
+                    تنبيه: هذا الموقع للأغراض التعليمية والتوعوية فقط. الحسابات تقريبية ويجب مراجعة البنك للتفاصيل الدقيقة.
+                </p>
             </div>
         </div>
     </footer>
 
+    <!-- JavaScript Files -->
+    <script src="js/utils.js"></script>
     <script src="js/calculator.js"></script>
     <script src="js/main.js"></script>
+    
+    <style>
+        /* Hero Section Styles */
+        .hero-section {
+            background: linear-gradient(135deg, #1a365d 0%, #2c5282 50%, #1a365d 100%);
+            padding: 4rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(212, 175, 55, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            color: white;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #ffffff 0%, #d4af37 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .hero-description {
+            font-size: 1.4rem;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+            color: #e2e8f0;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .hero-features {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            flex-wrap: wrap;
+            margin-top: 3rem;
+            animation: fadeIn 1.2s ease-out;
+        }
+
+        .hero-feature {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 1.2rem;
+            color: #d4af37;
+            font-weight: 600;
+        }
+
+        .hero-feature i {
+            font-size: 2rem;
+        }
+
+        /* Quick Calculator Styles */
+        .quick-calculator-section {
+            margin-top: -2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .quick-calculator-card {
+            background: white;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        /* Services Section */
+        .services-section {
+            background: var(--bg-primary);
+        }
+
+        .section-header {
+            margin-bottom: 3rem;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-header p {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+        }
+
+        .service-card {
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.4s ease;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-dark) 0%, var(--accent-gold) 100%);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .service-card:hover {
+            border-color: var(--accent-gold);
+            transform: translateY(-10px);
+        }
+
+        .service-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .service-icon {
+            font-size: 3rem;
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+        }
+
+        .service-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-dark);
+        }
+
+        .service-description {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
+        }
+
+        .service-link {
+            display: inline-block;
+            color: var(--accent-gold);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .service-link i {
+            transition: transform 0.3s ease;
+        }
+
+        .service-card:hover .service-link i {
+            transform: translateX(-5px);
+        }
+
+        /* Why Us Section */
+        .why-us-section {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        }
+
+        .why-us-card {
+            background: white;
+            padding: 2rem;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
+        }
+
+        .why-us-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .why-us-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .why-us-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 0.8rem;
+            color: var(--primary-dark);
+        }
+
+        .why-us-card p {
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.2rem;
+            }
+
+            .hero-description {
+                font-size: 1.1rem;
+            }
+
+            .hero-features {
+                gap: 1.5rem;
+                font-size: 1rem;
+            }
+
+            .hero-feature i {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
 </body>
 </html>
