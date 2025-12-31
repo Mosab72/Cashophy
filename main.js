@@ -1,255 +1,160 @@
-/* ========================================
-   Responsive Design - التصميم المتجاوب
-   Mobile First Approach
-======================================== */
+/**
+ * ===============================================
+ * الملف الرئيسي - Main JavaScript
+ * للصفحة الرئيسية وال Quick Calculator
+ * ===============================================
+ */
 
-/* ========================================
-   Tablet (أجهزة التابلت)
-   640px - 1024px
-======================================== */
-@media (max-width: 1024px) {
-  html {
-    font-size: 15px;
-  }
+document.addEventListener('DOMContentLoaded', function() {
+    // Quick Calculator في الصفحة الرئيسية
+    const quickCalculateBtn = document.getElementById('quickCalculateBtn');
+    
+    if (quickCalculateBtn) {
+        quickCalculateBtn.addEventListener('click', calculateQuickLoan);
+        
+        // حساب تلقائي عند تغيير القيم
+        const inputs = ['quickLoanAmount', 'quickLoanYears', 'quickInterestRate', 'quickSalary'];
+        inputs.forEach(id => {
+            const input = document.getElementById(id);
+            if (input) {
+                input.addEventListener('input', debounce(calculateQuickLoan, 500));
+            }
+        });
+    }
+});
 
-  h1 {
-    font-size: 2.5rem;
-  }
-
-  h2 {
-    font-size: 2rem;
-  }
-
-  h3 {
-    font-size: 1.7rem;
-  }
-
-  .grid-3,
-  .grid-4 {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .navbar-menu {
-    gap: 0.5rem;
-  }
-
-  .navbar-menu a {
-    padding: 0.5rem 0.8rem;
-    font-size: 1rem;
-  }
+// دالة لتأخير التنفيذ (debounce)
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
 }
 
-/* ========================================
-   Mobile (الجوالات)
-   < 640px
-======================================== */
-@media (max-width: 768px) {
-  html {
-    font-size: 14px;
-  }
-
-  h1 {
-    font-size: 2rem;
-  }
-
-  h2 {
-    font-size: 1.7rem;
-  }
-
-  h3 {
-    font-size: 1.4rem;
-  }
-
-  /* Navbar للجوال */
-  .navbar-toggle {
-    display: block;
-  }
-
-  .navbar-menu {
-    position: fixed;
-    top: 70px;
-    right: -100%;
-    width: 80%;
-    max-width: 300px;
-    height: calc(100vh - 70px);
-    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-medium) 100%);
-    flex-direction: column;
-    padding: var(--spacing-lg);
-    box-shadow: var(--shadow-xl);
-    transition: right 0.3s ease;
-    overflow-y: auto;
-  }
-
-  .navbar-menu.active {
-    right: 0;
-  }
-
-  .navbar-menu a {
-    width: 100%;
-    padding: 1rem;
-    text-align: center;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  }
-
-  /* Grid للجوال */
-  .grid-2,
-  .grid-3,
-  .grid-4 {
-    grid-template-columns: 1fr;
-  }
-
-  /* Buttons */
-  .btn {
-    padding: 0.9rem 1.5rem;
-    font-size: 1rem;
-  }
-
-  .btn-lg {
-    padding: 1.1rem 2rem;
-    font-size: 1.1rem;
-  }
-
-  /* Cards */
-  .card {
-    padding: var(--spacing-md);
-  }
-
-  /* Result Display */
-  .result-value {
-    font-size: 2rem;
-  }
-
-  .result-percentage {
-    font-size: 1.2rem;
-    padding: 0.3rem 0.8rem;
-  }
-
-  /* Container */
-  .container {
-    padding: 0 1rem;
-  }
-
-  .section {
-    padding: var(--spacing-lg) 0;
-  }
-
-  /* Footer */
-  .footer-content {
-    grid-template-columns: 1fr;
-  }
-
-  /* Form */
-  .form-input,
-  .form-select {
-    padding: 0.9rem 1rem;
-    font-size: 1rem;
-  }
+// حساب القرض السريع
+function calculateQuickLoan() {
+    // الحصول على القيم
+    const loanAmount = parseFloat(document.getElementById('quickLoanAmount').value);
+    const loanYears = parseFloat(document.getElementById('quickLoanYears').value);
+    const interestRate = parseFloat(document.getElementById('quickInterestRate').value);
+    const salary = parseFloat(document.getElementById('quickSalary').value);
+    
+    // التحقق من الإدخالات
+    if (!loanAmount || !loanYears || !interestRate || !salary) {
+        return; // لا تفعل شيء إذا كانت القيم فارغة
+    }
+    
+    if (loanAmount < 1000) {
+        showError('quickResults', 'مبلغ القرض يجب أن يكون أكبر من 1000 ريال');
+        return;
+    }
+    
+    if (salary < 1000) {
+        showError('quickResults', 'الراتب يجب أن يكون أكبر من 1000 ريال');
+        return;
+    }
+    
+    // حساب القرض (فائدة ثابتة)
+    const loanDetails = calculateLoan(loanAmount, interestRate, loanYears, 'fixed');
+    
+    // حساب نسبة الاستقطاع
+    const debtRatio = calculateDebtRatio(salary, loanDetails.monthlyPayment, 0);
+    
+    // تحديد نوع النسبة
+    const percentageClass = getPercentageClass(debtRatio.debtRatio);
+    const alertType = getAlertType(debtRatio.debtRatio);
+    
+    // عرض النتائج
+    const resultsDiv = document.getElementById('quickResults');
+    resultsDiv.className = 'result-container fade-in';
+    resultsDiv.innerHTML = `
+        <h3 style="color: var(--primary-dark); margin-bottom: 1.5rem; text-align: center;">
+            <i class="fas fa-check-circle" style="color: var(--accent-gold);"></i>
+            نتيجة الحساب السريع
+        </h3>
+        
+        <div class="grid grid-2" style="gap: 1.5rem;">
+            ${createResultHTML(
+                '💳 القسط الشهري',
+                formatCurrency(loanDetails.monthlyPayment),
+                null,
+                'هذا المبلغ اللي راح تدفعه كل شهر'
+            )}
+            
+            ${createResultHTML(
+                '📊 نسبة القسط من الراتب',
+                formatPercentage(debtRatio.debtRatio, 1),
+                null,
+                debtRatio.message,
+                percentageClass
+            )}
+            
+            ${createResultHTML(
+                '💰 إجمالي الفائدة',
+                formatCurrency(loanDetails.totalInterest),
+                formatPercentage(loanDetails.interestPercentage, 1),
+                'المبلغ الإضافي اللي راح تدفعه فوق أصل القرض'
+            )}
+            
+            ${createResultHTML(
+                '💵 صافي راتبك بعد القسط',
+                formatCurrency(debtRatio.netSalary),
+                formatPercentage(debtRatio.netSalaryPercentage, 1),
+                'المبلغ اللي راح يتبقى لك كل شهر'
+            )}
+        </div>
+        
+        <div class="alert ${alertType}" style="margin-top: 1.5rem;">
+            <span class="alert-icon">
+                ${debtRatio.debtRatio <= 25 ? '✅' : debtRatio.debtRatio <= 33 ? '⚠️' : '🚨'}
+            </span>
+            <div>
+                <strong>تقييم الوضع المالي:</strong><br>
+                ${debtRatio.message}
+                ${debtRatio.debtRatio > 33 ? '<br><strong>نصيحة:</strong> حاول تقلل مبلغ القرض أو تزيد المدة عشان تخفف القسط الشهري.' : ''}
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 2rem;">
+            <a href="calculator.html" class="btn btn-primary btn-lg">
+                <i class="fas fa-calculator"></i>
+                احسب بالتفصيل في الحاسبة الشاملة
+            </a>
+        </div>
+    `;
+    
+    // حفظ في localStorage
+    saveToLocalStorage('quickLoan', {
+        loanAmount,
+        loanYears,
+        interestRate,
+        salary,
+        timestamp: Date.now()
+    });
 }
 
-/* ========================================
-   Small Mobile (الجوالات الصغيرة)
-   < 480px
-======================================== */
-@media (max-width: 480px) {
-  html {
-    font-size: 13px;
-  }
-
-  .navbar-brand-text {
-    font-size: 1.4rem;
-  }
-
-  .navbar-brand-icon {
-    font-size: 1.5rem;
-  }
-
-  h1 {
-    font-size: 1.8rem;
-  }
-
-  h2 {
-    font-size: 1.5rem;
-  }
-
-  .result-value {
-    font-size: 1.7rem;
-  }
-
-  .card {
-    padding: 1rem;
-  }
-
-  .btn {
-    padding: 0.8rem 1.2rem;
-    font-size: 0.95rem;
-  }
-}
-
-/* ========================================
-   Print Styles (أنماط الطباعة)
-======================================== */
-@media print {
-  .navbar,
-  .footer,
-  .btn,
-  .navbar-toggle {
-    display: none;
-  }
-
-  body {
-    background: white;
-    color: black;
-  }
-
-  .card {
-    box-shadow: none;
-    border: 1px solid #ccc;
-    page-break-inside: avoid;
-  }
-
-  h1, h2, h3 {
-    color: black;
-    page-break-after: avoid;
-  }
-}
-
-/* ========================================
-   Landscape Mode (الوضع الأفقي للجوال)
-======================================== */
-@media (max-width: 768px) and (orientation: landscape) {
-  .navbar-menu {
-    height: calc(100vh - 60px);
-  }
-}
-
-/* ========================================
-   High DPI Screens (شاشات عالية الدقة)
-======================================== */
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-  /* تحسينات للشاشات عالية الدقة */
-  .btn,
-  .card,
-  .form-input {
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-}
-
-/* ========================================
-   Accessibility (إمكانية الوصول)
-======================================== */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-}
-
-/* Dark Mode Support (دعم الوضع الداكن - اختياري) */
-@media (prefers-color-scheme: dark) {
-  /* يمكن إضافة دعم للوضع الداكن لاحقاً */
-}
+// تحميل القيم المحفوظة عند فتح الصفحة
+window.addEventListener('load', function() {
+    const savedData = loadFromLocalStorage('quickLoan');
+    
+    if (savedData && (Date.now() - savedData.timestamp < 24 * 60 * 60 * 1000)) { // خلال 24 ساعة
+        const inputs = {
+            'quickLoanAmount': savedData.loanAmount,
+            'quickLoanYears': savedData.loanYears,
+            'quickInterestRate': savedData.interestRate,
+            'quickSalary': savedData.salary
+        };
+        
+        Object.keys(inputs).forEach(id => {
+            const element = document.getElementById(id);
+            if (element && inputs[id]) {
+                element.value = inputs[id];
+            }
+        });
+    }
+});
