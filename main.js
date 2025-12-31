@@ -1,184 +1,255 @@
-// ====================================
-// Cashophy - الوظائف العامة والمساعدة
-// ====================================
+/* ========================================
+   Responsive Design - التصميم المتجاوب
+   Mobile First Approach
+======================================== */
 
-// تنسيق الأرقام
-function formatNumber(num) {
-    return new Intl.NumberFormat('ar-SA').format(Math.round(num));
+/* ========================================
+   Tablet (أجهزة التابلت)
+   640px - 1024px
+======================================== */
+@media (max-width: 1024px) {
+  html {
+    font-size: 15px;
+  }
+
+  h1 {
+    font-size: 2.5rem;
+  }
+
+  h2 {
+    font-size: 2rem;
+  }
+
+  h3 {
+    font-size: 1.7rem;
+  }
+
+  .grid-3,
+  .grid-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .navbar-menu {
+    gap: 0.5rem;
+  }
+
+  .navbar-menu a {
+    padding: 0.5rem 0.8rem;
+    font-size: 1rem;
+  }
 }
 
-// تنسيق العملة
-function formatCurrency(num) {
-    return formatNumber(num) + ' ريال';
+/* ========================================
+   Mobile (الجوالات)
+   < 640px
+======================================== */
+@media (max-width: 768px) {
+  html {
+    font-size: 14px;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+
+  h2 {
+    font-size: 1.7rem;
+  }
+
+  h3 {
+    font-size: 1.4rem;
+  }
+
+  /* Navbar للجوال */
+  .navbar-toggle {
+    display: block;
+  }
+
+  .navbar-menu {
+    position: fixed;
+    top: 70px;
+    right: -100%;
+    width: 80%;
+    max-width: 300px;
+    height: calc(100vh - 70px);
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-medium) 100%);
+    flex-direction: column;
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-xl);
+    transition: right 0.3s ease;
+    overflow-y: auto;
+  }
+
+  .navbar-menu.active {
+    right: 0;
+  }
+
+  .navbar-menu a {
+    width: 100%;
+    padding: 1rem;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  /* Grid للجوال */
+  .grid-2,
+  .grid-3,
+  .grid-4 {
+    grid-template-columns: 1fr;
+  }
+
+  /* Buttons */
+  .btn {
+    padding: 0.9rem 1.5rem;
+    font-size: 1rem;
+  }
+
+  .btn-lg {
+    padding: 1.1rem 2rem;
+    font-size: 1.1rem;
+  }
+
+  /* Cards */
+  .card {
+    padding: var(--spacing-md);
+  }
+
+  /* Result Display */
+  .result-value {
+    font-size: 2rem;
+  }
+
+  .result-percentage {
+    font-size: 1.2rem;
+    padding: 0.3rem 0.8rem;
+  }
+
+  /* Container */
+  .container {
+    padding: 0 1rem;
+  }
+
+  .section {
+    padding: var(--spacing-lg) 0;
+  }
+
+  /* Footer */
+  .footer-content {
+    grid-template-columns: 1fr;
+  }
+
+  /* Form */
+  .form-input,
+  .form-select {
+    padding: 0.9rem 1rem;
+    font-size: 1rem;
+  }
 }
 
-// تنسيق النسبة المئوية
-function formatPercentage(num) {
-    return num.toFixed(2) + '%';
+/* ========================================
+   Small Mobile (الجوالات الصغيرة)
+   < 480px
+======================================== */
+@media (max-width: 480px) {
+  html {
+    font-size: 13px;
+  }
+
+  .navbar-brand-text {
+    font-size: 1.4rem;
+  }
+
+  .navbar-brand-icon {
+    font-size: 1.5rem;
+  }
+
+  h1 {
+    font-size: 1.8rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  .result-value {
+    font-size: 1.7rem;
+  }
+
+  .card {
+    padding: 1rem;
+  }
+
+  .btn {
+    padding: 0.8rem 1.2rem;
+    font-size: 0.95rem;
+  }
 }
 
-// الحصول على class حسب النسبة
-function getRatioClass(ratio) {
-    if (ratio < 25) return 'success';
-    if (ratio < 33) return 'warning';
-    return 'danger';
+/* ========================================
+   Print Styles (أنماط الطباعة)
+======================================== */
+@media print {
+  .navbar,
+  .footer,
+  .btn,
+  .navbar-toggle {
+    display: none;
+  }
+
+  body {
+    background: white;
+    color: black;
+  }
+
+  .card {
+    box-shadow: none;
+    border: 1px solid #ccc;
+    page-break-inside: avoid;
+  }
+
+  h1, h2, h3 {
+    color: black;
+    page-break-after: avoid;
+  }
 }
 
-// الحصول على رسالة حسب النسبة
-function getRatioMessage(ratio) {
-    if (ratio < 25) return '✓ نسبة آمنة جداً';
-    if (ratio < 33) return '⚠ نسبة مقبولة';
-    return '✗ نسبة خطيرة';
+/* ========================================
+   Landscape Mode (الوضع الأفقي للجوال)
+======================================== */
+@media (max-width: 768px) and (orientation: landscape) {
+  .navbar-menu {
+    height: calc(100vh - 60px);
+  }
 }
 
-// حفظ في localStorage
-function saveToStorage(key, data) {
-    try {
-        localStorage.setItem(key, JSON.stringify(data));
-    } catch (e) {
-        console.error('خطأ في الحفظ:', e);
-    }
+/* ========================================
+   High DPI Screens (شاشات عالية الدقة)
+======================================== */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  /* تحسينات للشاشات عالية الدقة */
+  .btn,
+  .card,
+  .form-input {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 }
 
-// قراءة من localStorage
-function loadFromStorage(key) {
-    try {
-        const data = localStorage.getItem(key);
-        return data ? JSON.parse(data) : null;
-    } catch (e) {
-        console.error('خطأ في القراءة:', e);
-        return null;
-    }
+/* ========================================
+   Accessibility (إمكانية الوصول)
+======================================== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
-// التحقق من صحة الإدخال
-function validateInput(value, min = 0, max = Infinity) {
-    const num = parseFloat(value);
-    return !isNaN(num) && num >= min && num <= max;
+/* Dark Mode Support (دعم الوضع الداكن - اختياري) */
+@media (prefers-color-scheme: dark) {
+  /* يمكن إضافة دعم للوضع الداكن لاحقاً */
 }
-
-// عرض رسالة تنبيه
-function showAlert(message, type = 'info') {
-    const alertDiv = document.createElement('div');
-    alertDiv.className = `alert alert-${type}`;
-    alertDiv.textContent = message;
-    
-    const container = document.querySelector('.container');
-    container.insertBefore(alertDiv, container.firstChild);
-    
-    setTimeout(() => alertDiv.remove(), 5000);
-}
-
-// إخفاء/إظهار عنصر
-function toggleElement(elementId) {
-    const element = document.getElementById(elementId);
-    if (element) {
-        element.style.display = element.style.display === 'none' ? 'block' : 'none';
-    }
-}
-
-// التمرير السلس لعنصر
-function smoothScrollTo(elementId) {
-    const element = document.getElementById(elementId);
-    if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-    }
-}
-
-// طباعة الصفحة
-function printPage() {
-    window.print();
-}
-
-// تصدير جدول إلى CSV
-function exportTableToCSV(tableId, filename = 'table.csv') {
-    const table = document.getElementById(tableId);
-    if (!table) return;
-    
-    let csv = [];
-    const rows = table.querySelectorAll('tr');
-    
-    rows.forEach(row => {
-        const cols = row.querySelectorAll('td, th');
-        const rowData = Array.from(cols).map(col => col.textContent);
-        csv.push(rowData.join(','));
-    });
-    
-    const csvContent = csv.join('\n');
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = filename;
-    link.click();
-}
-
-// حساب سريع - الصفحة الرئيسية
-function quickCalculate() {
-    const principal = parseFloat(document.getElementById('quick-amount')?.value) || 0;
-    const years = parseFloat(document.getElementById('quick-years')?.value) || 0;
-    const rate = parseFloat(document.getElementById('quick-rate')?.value) || 0;
-    
-    if (!validateInput(principal, 1000) || !validateInput(years, 0.5, 30) || !validateInput(rate, 0.1, 20)) {
-        showAlert('الرجاء إدخال قيم صحيحة', 'danger');
-        return;
-    }
-    
-    const result = LoanCalculator.calculateLoanDetails(principal, rate, years, 'fixed');
-    
-    const resultDiv = document.getElementById('quick-result');
-    if (resultDiv) {
-        resultDiv.innerHTML = `
-            <div class="result-item">
-                <div class="result-label">القسط الشهري</div>
-                <div class="result-value">${formatCurrency(result.monthlyPayment)}</div>
-            </div>
-            <div class="result-item">
-                <div class="result-label">إجمالي الفائدة</div>
-                <div class="result-value">${formatCurrency(result.totalInterest)}</div>
-                <span class="result-percentage">${formatPercentage(result.interestRate)}</span>
-            </div>
-            <div class="result-item">
-                <div class="result-label">إجمالي المدفوع</div>
-                <div class="result-value">${formatCurrency(result.totalPayment)}</div>
-            </div>
-        `;
-        resultDiv.style.display = 'block';
-    }
-}
-
-// تهيئة الصفحة عند التحميل
-document.addEventListener('DOMContentLoaded', function() {
-    // إضافة مستمعات الأحداث للحاسبة السريعة
-    const quickBtn = document.getElementById('quick-calc-btn');
-    if (quickBtn) {
-        quickBtn.addEventListener('click', quickCalculate);
-    }
-    
-    // تفعيل القائمة في الجوال
-    const navToggle = document.querySelector('.navbar-toggle');
-    const navMenu = document.querySelector('.navbar-menu');
-    
-    if (navToggle && navMenu) {
-        navToggle.addEventListener('click', () => {
-            navMenu.classList.toggle('active');
-        });
-    }
-    
-    // تحميل البيانات المحفوظة
-    const savedData = loadFromStorage('cashophy-last-calc');
-    if (savedData) {
-        console.log('تم تحميل البيانات المحفوظة');
-    }
-});
-
-// حفظ البيانات قبل مغادرة الصفحة
-window.addEventListener('beforeunload', function() {
-    const formData = {};
-    const inputs = document.querySelectorAll('input, select');
-    inputs.forEach(input => {
-        if (input.id) {
-            formData[input.id] = input.value;
-        }
-    });
-    saveToStorage('cashophy-last-calc', formData);
-});
